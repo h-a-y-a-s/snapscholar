@@ -121,47 +121,99 @@ def summarization_node(state: SnapScholarState) -> SnapScholarState:
     return state
 
 
+def _safe_json_from_text(raw: str) -> any:
+    """
+    Try hard to parse JSON from a Gemini response:
+    1) try json.loads directly
+    2) if that fails, extract substring between first '{' and last '}' and parse that
+    """
+    raw = (raw or "").strip()
+    if not raw:
+        raise ValueError("Empty response from Gemini")
+
+    # 1) direct attempt
+    try:
+        return json.loads(raw)
+    except Exception:
+        pass
+
+    # 2) extract JSON-looking block
+    start = raw.find("{")
+    end = raw.rfind("}")
+    if start == -1 or end == -1 or end <= start:
+        raise ValueError("Could not find JSON object in response")
+
+    json_str = raw[start : end + 1]
+    return json.loads(json_str)
+
+
 def screenshot_planning_node(state: SnapScholarState) -> SnapScholarState:
-    """
-    Use Gemini + SCREENSHOT_PLANNING_PROMPT to decide:
-    - which timestamps to capture
-    - what each screenshot represents
-
-    Inputs:
-        state['transcript_with_timestamps']
-        state['summary']
-
-    Output:
-        state['screenshot_plan']  (list of dicts)
-    """
+    """Plan which moments to screenshot based on transcript + summary."""
     state["current_step"] = "plan_screenshots"
 
-    transcript_with_ts = state.get("transcript_with_timestamps")
-    summary = state.get("summary")
+    transcript_ts = state.get("transcript_with_timestamps") or ""
+    summary = state.get("summary") or ""
+    max_shots = getattr(settings, "MAX_SCREENSHOTS", 8)
 
-    if not transcript_with_ts or not summary:
+    if not transcript_ts or not summary:
         state["errors"].append(
-            "Cannot plan screenshots: missing transcript_with_timestamps or summary."
+            "Screenshot planning skipped: missing transcript_with_timestamps or summary"
         )
         return state
 
     prompt = SCREENSHOT_PLANNING_PROMPT.format(
-        transcript_with_timestamps=transcript_with_ts,
-        summary=summary,
-        max_screenshots=settings.MAX_SCREENSHOTS,
+        transcript_with_timestamps=transcript_ts[:8000],
+        summary=summary[:4000],
+        max_screenshots=max_shots,
     )
 
     try:
         response = gemini_model.generate_content(prompt)
-        raw_text = response.text.strip()
+        raw = response.text or ""
 
-        # Expect JSON with {"screenshots": [ ... ]}
-        plan_obj = json.loads(raw_text)
-        screenshots: List[Dict] = plan_obj.get("screenshots", [])
-        state["screenshot_plan"] = screenshots
+        try:
+            parsed = _safe_json_from_text(raw)
+        except Exception as parse_err:
+            # Debug help: show what Gemini actually returned
+            print("\n==== RAW GEMINI RESPONSE FOR SCREENSHOT PLANNING (truncated) ====")
+            print(raw[:1000])
+            print("=================================================================\n")
+            raise ValueError(f"JSON parse failed: {parse_err}")
 
-    except json.JSONDecodeError as e:
-        state["errors"].append(f"Screenshot planning JSON parse failed: {e}")
+        # Either {"screenshots": [...]} or directly a list
+        if isinstance(parsed, dict):
+            plan = parsed.get("screenshots", [])
+        else:
+            plan = parsed
+
+        if not isinstance(plan, list):
+            raise ValueError("Parsed JSON is not a list or missing 'screenshots'")
+
+        normalized: List[Dict[str, any]] = []
+        for item in plan:
+            if not isinstance(item, dict):
+                continue
+
+            ts = item.get("timestamp")
+            try:
+                ts = float(ts)
+            except (TypeError, ValueError):
+                continue
+
+            normalized.append(
+                {
+                    "timestamp": ts,
+                    "caption": (item.get("caption") or "").strip(),
+                    "summary_section": (item.get("summary_section") or "").strip(),
+                    "concept": (item.get("concept") or "").strip(),
+                }
+            )
+
+        if not normalized:
+            state["errors"].append("Screenshot planning produced no valid entries")
+        else:
+            state["screenshot_plan"] = normalized
+
     except Exception as e:
         state["errors"].append(f"Screenshot planning failed: {e}")
 
