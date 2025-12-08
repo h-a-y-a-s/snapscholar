@@ -25,6 +25,10 @@ class Settings:
     # MODEL_NAME = "gemini-1.5-pro"  # More powerful (also FREE!)
     TEMPERATURE = 0.7
     MAX_TOKENS = 4000
+
+    # Whisper Settings (for transcription)
+    WHISPER_MODEL = "base"  # Options: tiny, base, small, medium, large
+    USE_WHISPER_FALLBACK = True  # Try YouTube API first, then Whisper
     
     # Screenshot Settings
     MAX_SCREENSHOTS = 8
