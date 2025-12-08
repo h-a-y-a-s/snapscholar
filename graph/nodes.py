@@ -4,7 +4,7 @@ Node (agent) implementations for the SnapScholar LangGraph workflow.
 
 from typing import cast, List, Dict
 import json
-
+from pathlib import Path
 import google.generativeai as genai
 
 from tools.youtube_tools import (
@@ -272,4 +272,79 @@ def screenshot_extraction_node(state: SnapScholarState) -> SnapScholarState:
     state["video_path"] = str(result["video_path"])        # Path -> str
     state["video_dir"] = str(result["video_dir"])          # Path -> str
 
+    return state
+
+def document_assembly_node(state: SnapScholarState) -> SnapScholarState:
+    """
+    Build a simple Markdown study guide from the summary + screenshots.
+
+    Output is saved under:
+      data/temp/<video_id>/study_guide.md
+
+    and the path is stored in state["document_link"].
+    """
+    state["current_step"] = "assemble_document"
+
+    summary = state.get("summary") or ""
+    screenshots = state.get("screenshots") or []
+    video_id = state.get("video_id") or "video"
+
+    if not summary:
+        state["errors"].append("Document assembly skipped: missing summary")
+        return state
+
+    # Target directory: same as video
+    base_dir: Path = settings.TEMP_DIR / video_id
+    base_dir.mkdir(parents=True, exist_ok=True)
+
+    doc_path = base_dir / "study_guide.md"
+
+    # --- Build Markdown content ---
+    lines = []
+
+    # Title
+    lines.append(f"# SnapScholar Study Guide — {video_id}\n")
+
+    # Summary (already structured with ## headers)
+    lines.append("## Text Summary\n")
+    lines.append(summary.strip())
+    lines.append("")  # blank line
+
+    # Screenshots section
+    if screenshots:
+        lines.append("## Visual Aids (Screenshots)\n")
+        lines.append(
+            "Below are key visual moments extracted from the video, "
+            "with timestamps and captions:\n"
+        )
+
+        for shot in screenshots:
+            ts = shot.get("timestamp")
+            caption = shot.get("caption") or ""
+            section = shot.get("summary_section") or ""
+            concept = shot.get("concept") or ""
+            path = shot.get("path") or ""
+
+            lines.append(f"### t = {ts:.1f}s")
+            if caption:
+                lines.append(f"**Caption:** {caption}")
+            if section:
+                lines.append(f"**Summary section:** {section}")
+            if concept:
+                lines.append(f"**Concept:** {concept}")
+            if path:
+                # Relative path so it’s not machine-specific
+                rel_path = Path(path)
+                lines.append(f"**File:** `{rel_path}`")
+            lines.append("")  # blank line between screenshots
+
+    else:
+        lines.append("## Visual Aids (Screenshots)\n")
+        lines.append("_No screenshots were extracted._\n")
+
+    # Write to file
+    doc_text = "\n".join(lines)
+    doc_path.write_text(doc_text, encoding="utf-8")
+
+    state["document_link"] = str(doc_path)
     return state
