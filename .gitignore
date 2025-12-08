@@ -1,4 +1,10 @@
-cat > .gitignore << 'EOF'
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+venv.bak/
+
 # API Keys & Credentials
 .env
 credentials.json
@@ -9,23 +15,44 @@ token.json
 __pycache__/
 *.pyc
 *.pyo
-.pytest_cache/
+*.pyd
+.Python
+*.so
+*.egg
 *.egg-info/
 dist/
 build/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
 
-# Data
+# Data & Media
 data/temp/*
 !data/temp/.gitkeep
 *.mp4
 *.jpg
 *.png
+*.jpeg
+*.gif
+*.avi
+*.mov
 
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 .DS_Store
 
-# Notebooks
+# Jupyter Notebooks
 .ipynb_checkpoints/
-EOF
+*.ipynb
+
+# Logs
+*.log
+
+# OS
+Thumbs.db
+Desktop.ini
