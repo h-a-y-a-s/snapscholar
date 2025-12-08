@@ -1,0 +1,31 @@
+cat > .gitignore << 'EOF'
+# API Keys & Credentials
+.env
+credentials.json
+token.json
+*.pem
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Data
+data/temp/*
+!data/temp/.gitkeep
+*.mp4
+*.jpg
+*.png
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+
+# Notebooks
+.ipynb_checkpoints/
+EOF

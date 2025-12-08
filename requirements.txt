@@ -1,0 +1,26 @@
+cat > requirements.txt << 'EOF'
+# Core
+streamlit==1.28.0
+python-dotenv==1.0.0
+
+# LangChain & LLM
+langchain==0.1.20
+langchain-anthropic==0.1.11
+langgraph==0.0.40
+
+# YouTube
+youtube-transcript-api==0.6.1
+yt-dlp==2023.11.16
+
+# Google Drive
+google-api-python-client==2.108.0
+google-auth-httplib2==0.1.1
+google-auth-oauthlib==1.1.0
+
+# Image Processing
+Pillow==10.1.0
+opencv-python==4.8.1.78
+
+# Utils
+requests==2.31.0
+EOF
