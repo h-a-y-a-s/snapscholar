@@ -5,8 +5,11 @@ Nodes:
 - init_state       -> fill in video_id, set defaults
 - fetch_transcript -> get transcript + timestamps
 - summarize        -> Gemini summary
-- plan_screenshots -> Gemini screenshot plan (timestamps + captions)
+- extract_topics   -> Parse topics from summary
+- select_timestamps -> Find best timestamp per topic
+- validate_frames  -> CV quality checks
 - extract_screenshots -> yt-dlp + OpenCV frame extraction
+- assemble_document -> Create markdown with inline images
 """
 
 from typing import Iterable
@@ -18,10 +21,13 @@ from graph.nodes import (
     init_state_node,
     transcript_node,
     summarization_node,
-    screenshot_planning_node,
+    topic_extraction_node,
+    topic_timestamp_selection_node,
+    frame_validation_node,
     screenshot_extraction_node,
     document_assembly_node,
 )
+from config.settings import settings
 
 
 def build_snapscholar_graph():
@@ -30,34 +36,48 @@ def build_snapscholar_graph():
     """
     workflow = StateGraph(SnapScholarState)
 
-    # --- Register nodes ---
+    # Register nodes
     workflow.add_node("init_state", init_state_node)
     workflow.add_node("fetch_transcript", transcript_node)
     workflow.add_node("summarize", summarization_node)
-    workflow.add_node("plan_screenshots", screenshot_planning_node)
+    
+    if settings.USE_TOPIC_BASED_SELECTION:
+        # Topic-based pipeline
+        workflow.add_node("extract_topics", topic_extraction_node)
+        workflow.add_node("select_timestamps", topic_timestamp_selection_node)
+        workflow.add_node("validate_frames", frame_validation_node)
+    
     workflow.add_node("extract_screenshots", screenshot_extraction_node)
-    workflow.add_node("assemble_document", document_assembly_node)  
+    workflow.add_node("assemble_document", document_assembly_node)
 
-    # --- Wire the edges (linear pipeline for now) ---
+    # Wire edges
     workflow.set_entry_point("init_state")
     workflow.add_edge("init_state", "fetch_transcript")
     workflow.add_edge("fetch_transcript", "summarize")
-    workflow.add_edge("summarize", "plan_screenshots")
-    workflow.add_edge("plan_screenshots", "extract_screenshots")
+    
+    if settings.USE_TOPIC_BASED_SELECTION:
+        # Topic-based flow
+        workflow.add_edge("summarize", "extract_topics")
+        workflow.add_edge("extract_topics", "select_timestamps")
+        workflow.add_edge("select_timestamps", "validate_frames")
+        workflow.add_edge("validate_frames", "extract_screenshots")
+    else:
+        # Original flow (fallback)
+        workflow.add_edge("summarize", "extract_screenshots")
+    
     workflow.add_edge("extract_screenshots", "assemble_document")
-    workflow.add_edge("extract_screenshots", END)
+    workflow.add_edge("assemble_document", END)
 
     return workflow.compile()
 
 
-# Create a compiled app we can import and reuse
+# Create compiled app
 snapscholar_app = build_snapscholar_graph()
 
 
 def make_initial_state(youtube_url: str) -> SnapScholarState:
     """
     Helper to construct a fresh SnapScholarState from just a YouTube URL.
-    Same structure you used in your manual tests.
     """
     return {
         "youtube_url": youtube_url,
@@ -66,6 +86,9 @@ def make_initial_state(youtube_url: str) -> SnapScholarState:
         "transcript_segments": None,
         "video_duration": None,
         "summary": None,
+        "topics": None,
+        "topic_timestamps": None,
+        "frame_validation": None,
         "screenshot_plan": None,
         "screenshots": None,
         "video_path": None,
@@ -91,6 +114,5 @@ def run_snapscholar_stream(youtube_url: str) -> Iterable[SnapScholarState]:
     """
     state = make_initial_state(youtube_url)
     for event in snapscholar_app.stream(state):
-        # event is a dict: {node_name: state_after_node}
         for _node_name, node_state in event.items():
             yield node_state

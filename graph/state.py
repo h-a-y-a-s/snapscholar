@@ -8,7 +8,7 @@ class SnapScholarState(TypedDict, total=False):
     """
     State that flows through the agent workflow.
     
-    This contains all data needed by agents:
+    Contains all data needed by agents:
     - Input: YouTube URL/video_id
     - Transcript data
     - AI-generated summary
@@ -30,19 +30,29 @@ class SnapScholarState(TypedDict, total=False):
     # AI-generated summary
     summary: Optional[str]
     
+    # Topic-based visual selection
+    # topics: ["Introduction", "Core Concepts", "Applications"]
+    topics: Optional[List[str]]
+    
+    # topic_timestamps: [{"topic": "Core Concepts", "timestamp": 150.5, "caption": "..."}]
+    topic_timestamps: Optional[List[Dict]]
+    
+    # frame_validation: [{"timestamp": 150.5, "is_valid": True, "validation_details": {...}}]
+    frame_validation: Optional[List[Dict]]
+    
     # Screenshot planning
-    # e.g. [{timestamp, caption, summary_section, concept}]
+    # [{timestamp, caption, summary_section, concept}]
     screenshot_plan: Optional[List[Dict]]
     
     # Extracted screenshots
-    # e.g. [{timestamp, path}]
+    # [{timestamp, path, topic}]
     screenshots: Optional[List[Dict]]
     video_path: Optional[str]
     video_dir: Optional[str]
     
-    # Final output (e.g. Google Doc/Slides link)
+    # Final output
     document_link: Optional[str]
     
-    # Error handling / tracking
+    # Error handling
     errors: List[str]
     current_step: Optional[str]
