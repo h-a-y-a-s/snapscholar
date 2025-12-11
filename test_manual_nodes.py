@@ -16,7 +16,8 @@ def main():
 
     # 1. Create a fresh clean state
     state: SnapScholarState = {
-        "youtube_url": "https://www.youtube.com/watch?v=FE-hM1kRK4Y",
+        #"youtube_url": "https://www.youtube.com/watch?v=FE-hM1kRK4Y",
+        "youtube_url": "https://youtu.be/qJeaCHQ1k2w?si=AYmsm7Z5uL7B6zjf",
         "errors": [],
     }
 
@@ -34,6 +35,7 @@ def main():
     print("video_id:", state.get("video_id"))
 
     # 3. Test transcript_node
+    # Caching is now handled inside the node itself.
     state = transcript_node(state)
 
     line()
@@ -42,12 +44,13 @@ def main():
     print("errors:", state["errors"])
 
     print("\nFirst 300 chars of transcript_text:")
-    print(state["transcript_text"][:300])
+    print((state.get("transcript_text") or "")[:300])
 
     print("\nFirst 300 chars of transcript_with_timestamps:")
-    print(state["transcript_with_timestamps"][:300])
+    print((state.get("transcript_with_timestamps") or "")[:300])
 
     # 4. Test summarization_node (Gemini)
+    # Caching is now handled inside the node itself.
     state = summarization_node(state)
 
     line()

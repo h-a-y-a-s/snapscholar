@@ -5,6 +5,7 @@ Organizes files by video ID: data/temp/{video_id}/video.mp4 and screenshots
 import os
 import cv2
 import yt_dlp
+import json
 import numpy as np
 from pathlib import Path
 from typing import List, Dict, Optional
@@ -22,19 +23,17 @@ except:
 
 def download_video(video_id: str, output_dir: Optional[Path] = None) -> Dict:
     """
-    Download YouTube video for screenshot extraction
+    Download YouTube video for screenshot extraction.
     Creates a directory for each video: data/temp/{video_id}/
     
     Args:
         video_id: YouTube video ID
         output_dir: Base directory (default: data/temp/)
-        
     Returns:
         Dict with download info
     """
     if output_dir is None:
         output_dir = Path("data/temp")
-    
     video_dir = output_dir / video_id
     video_dir.mkdir(parents=True, exist_ok=True)
     

@@ -21,6 +21,7 @@ from tools.screenshot_tools import (
     find_best_nearby_frame,
     extract_frame,
 )
+from tools.cache_tools import get_from_cache, save_to_cache
 from config.prompts import (
     SUMMARIZATION_PROMPT,
     SCREENSHOT_PLANNING_PROMPT,
@@ -74,21 +75,43 @@ def transcript_node(state: SnapScholarState) -> SnapScholarState:
     if not video_id:
         state["errors"].append("Cannot fetch transcript: missing video_id.")
         return state
-
+    
+    # --- Caching Logic ---
+    cache_key = f"{video_id}:transcript"
+    cached_data = get_from_cache(cache_key)
+    if cached_data:
+        print("  ✅ Using cached transcript.")
+        state.update(cached_data)
+        return state
+    
+    print("  Transcript not in cache, fetching from YouTube...")
+    # --- End Caching Logic ---
+    
     result = fetch_transcript(video_id)
 
     if not result["success"]:
         state["errors"].append(f"Transcript fetch failed: {result['error']}")
         return state
 
-    state["transcript_text"] = result["text"]
-    state["transcript_segments"] = result["segments"]
-    state["video_duration"] = result["duration"]
-
+    # Prepare data to be used and cached
+    transcript_data = {
+        "transcript_text": result["text"],
+        "transcript_segments": result["segments"],
+        "video_duration": result["duration"],
+        "transcript_with_timestamps": None, # Default value
+    }
     if result["segments"]:
-        state["transcript_with_timestamps"] = format_transcript_with_timestamps(
+        transcript_data["transcript_with_timestamps"] = format_transcript_with_timestamps(
             result["segments"]
         )
+
+    # Update state with the new data
+    state.update(transcript_data)
+
+    # --- Caching Logic ---
+    # Save the prepared data to cache
+    save_to_cache(cache_key, transcript_data)
+    # --- End Caching Logic ---
 
     return state
 
@@ -100,10 +123,23 @@ def summarization_node(state: SnapScholarState) -> SnapScholarState:
     """
     state["current_step"] = "summarize"
 
+    video_id = state.get("video_id")
     transcript_text = state.get("transcript_text")
     if not transcript_text:
         state["errors"].append("Cannot summarize: missing transcript_text.")
         return state
+
+    # --- Caching Logic ---
+    cache_key = f"{video_id}:summary"
+    if video_id:
+        cached_summary = get_from_cache(cache_key)
+        if cached_summary:
+            print("  ✅ Using cached summary.")
+            state["summary"] = cached_summary
+            return state
+    
+    print("  Summary not in cache, generating with Gemini...")
+    # --- End Caching Logic ---
 
     prompt = SUMMARIZATION_PROMPT.format(transcript=transcript_text)
 
@@ -111,6 +147,12 @@ def summarization_node(state: SnapScholarState) -> SnapScholarState:
         response = gemini_model.generate_content(prompt)
         summary_text = response.text.strip()
         state["summary"] = summary_text
+        
+        # --- Caching Logic ---
+        if video_id:
+            save_to_cache(cache_key, summary_text)
+        # --- End Caching Logic ---
+
     except Exception as e:
         state["errors"].append(f"Summarization failed: {e}")
 

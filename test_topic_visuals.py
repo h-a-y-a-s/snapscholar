@@ -4,12 +4,13 @@ Tests only the new approach on a single video
 """
 
 from graph.graph import run_snapscholar
+from tools.cache_tools import clear_cache
 from config.settings import settings
 
 # Test video
-TEST_VIDEO = "https://www.youtube.com/watch?v=8wAwLwJAGHs"
-
-
+#TEST_VIDEO = "https://www.youtube.com/watch?v=8wAwLwJAGHs"
+#TEST_VIDEO = "https://youtu.be/tadUeiNe5-g?si=trB5GJ1sZxqrXntA"
+TEST_VIDEO = "https://youtu.be/qJeaCHQ1k2w?si=pMfWaI271_wVYyC-"
 def print_separator(title=""):
     """Print a nice separator"""
     print("\n" + "=" * 70)
@@ -119,5 +120,10 @@ def run_test():
 if __name__ == "__main__":
     import sys
     
+    if "--clear-cache" in sys.argv:
+        print_separator("CLEARING CACHE")
+        clear_cache()
+        print("Cache cleared. Proceeding with test run...")
+
     success = run_test()
     sys.exit(0 if success else 1)
