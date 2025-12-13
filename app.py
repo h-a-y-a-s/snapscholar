@@ -2,6 +2,9 @@ import streamlit as st
 import re
 from pathlib import Path
 import time
+import pypandoc
+import os
+import random
 
 # Internal imports from your existing codebase
 from graph.graph import run_snapscholar_stream
@@ -35,6 +38,27 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+
+def convert_md_to_docx(md_file_path: str) -> str:
+    """
+    Converts a Markdown file to a DOCX file using Pandoc, ensuring images are embedded.
+    """
+    md_file_path = os.path.abspath(md_file_path)
+    docx_file_path = os.path.splitext(md_file_path)[0] + ".docx"
+    
+    original_cwd = os.getcwd()
+    md_dir = os.path.dirname(md_file_path)
+    md_filename = os.path.basename(md_file_path)
+
+    try:
+        os.chdir(md_dir)
+        pypandoc.convert_file(md_filename, 'docx', outputfile=docx_file_path)
+        return docx_file_path
+    except Exception as e:
+        st.error(f"Error converting to DOCX: {e}")
+        return None
+    finally:
+        os.chdir(original_cwd)
 
 def render_study_guide(file_path_str: str):
     """
@@ -125,8 +149,11 @@ def main():
     st.title("🎓 Video to Study Guide")
     st.markdown("Generate a comprehensive summary with context-aware screenshots automatically.")
 
+    st.subheader("✨ Demo")
+    st.video("https://youtu.be/qJeaCHQ1k2w?si=Q7R6Yq9He9CEVrlW")
+
     # Input area
-    url = st.text_input("Enter YouTube Video URL", placeholder="https://www.youtube.com/watch?v=...")
+    url = st.text_input("Enter YouTube Video URL", value="https://youtu.be/qJeaCHQ1k2w?si=Q7R6Yq9He9CEVrlW", placeholder="https://www.youtube.com/watch?v=...")
 
     if st.button("Generate Guide", type="primary"):
         if not url:
@@ -190,14 +217,29 @@ def main():
         st.divider()
         st.subheader("📚 Generated Study Guide")
         
-        # Download Button
-        with open(doc_path, "rb") as file:
-            btn = st.download_button(
-                label="📥 Download Markdown File",
-                data=file,
-                file_name="study_guide.md",
-                mime="text/markdown"
-            )
+        col1, col2 = st.columns(2)
+
+        with col1:
+            # Convert markdown to docx
+            docx_path = convert_md_to_docx(doc_path)
+            if docx_path and os.path.exists(docx_path):
+                with open(docx_path, "rb") as file:
+                    st.download_button(
+                        label="📥 Download DOCX File",
+                        data=file,
+                        file_name="study_guide.docx",
+                        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                        use_container_width=True
+                    )
+        
+        with col2:
+            if st.button("🎉 Celebrate!", use_container_width=True):
+                effects = [
+                    st.balloons,
+                    st.snow,
+                    lambda: st.success(f"Great job! {random.choice(['🥳', '🎊', '✨', '🤩'])}")
+                ]
+                random.choice(effects)()
 
         # Render content within a styled container
         with st.container(border=True):

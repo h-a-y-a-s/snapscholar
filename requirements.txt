@@ -39,3 +39,6 @@ diskcache>=5.6.1
 
 #streamlit
 streamlit>=1.32.0
+
+# Pandoc
+pypandoc>=1.12
