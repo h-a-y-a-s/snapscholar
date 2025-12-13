@@ -75,7 +75,12 @@ def build_snapscholar_graph():
 snapscholar_app = build_snapscholar_graph()
 
 
-def make_initial_state(youtube_url: str) -> SnapScholarState:
+def make_initial_state(
+    youtube_url: str,
+    model_name: str,
+    summarization_prompt: str,
+    topic_extraction_prompt: str,
+) -> SnapScholarState:
     """
     Helper to construct a fresh SnapScholarState from just a YouTube URL.
     """
@@ -96,23 +101,40 @@ def make_initial_state(youtube_url: str) -> SnapScholarState:
         "document_link": None,
         "errors": [],
         "current_step": "",
+        "model_name": model_name,
+        "summarization_prompt": summarization_prompt,
+        "topic_extraction_prompt": topic_extraction_prompt,
     }
 
 
-def run_snapscholar(youtube_url: str) -> SnapScholarState:
+def run_snapscholar(
+    youtube_url: str,
+    model_name: str,
+    summarization_prompt: str,
+    topic_extraction_prompt: str,
+) -> SnapScholarState:
     """
     Convenience wrapper: run the full graph and return the final state.
     """
-    state = make_initial_state(youtube_url)
+    state = make_initial_state(
+        youtube_url, model_name, summarization_prompt, topic_extraction_prompt
+    )
     final_state = snapscholar_app.invoke(state)
     return final_state
 
 
-def run_snapscholar_stream(youtube_url: str) -> Iterable[SnapScholarState]:
+def run_snapscholar_stream(
+    youtube_url: str,
+    model_name: str,
+    summarization_prompt: str,
+    topic_extraction_prompt: str,
+) -> Iterable[SnapScholarState]:
     """
     Optional: stream intermediate states (useful later in Streamlit UI).
     """
-    state = make_initial_state(youtube_url)
+    state = make_initial_state(
+        youtube_url, model_name, summarization_prompt, topic_extraction_prompt
+    )
     for event in snapscholar_app.stream(state):
         for _node_name, node_state in event.items():
             yield node_state

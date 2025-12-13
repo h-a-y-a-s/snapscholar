@@ -9,6 +9,7 @@ import random
 # Internal imports from your existing codebase
 from graph.graph import run_snapscholar_stream
 from config.settings import settings
+from config.prompts import SUMMARIZATION_PROMPT, TOPIC_EXTRACTION_PROMPT
 
 # --- Page Config ---
 st.set_page_config(
@@ -28,9 +29,7 @@ st.markdown("""
         margin-top: 1rem;
     }
     div.stButton > button {
-        width: 100%;
-        background-color: #FF4B4B;
-        color: white;
+        height: 3.6rem;
     }
     div.stButton > button:hover {
         background-color: #FF2B2B;
@@ -139,9 +138,6 @@ def main():
         """)
         
         st.markdown("---")
-        st.markdown("### Settings")
-        # You could expose settings here if needed
-        st.info(f"Model: {settings.MODEL_NAME}")
         if settings.USE_TOPIC_BASED_SELECTION:
             st.success("✨ Enhanced Visual Selection Active")
 
@@ -149,13 +145,51 @@ def main():
     st.title("🎓 Video to Study Guide")
     st.markdown("Generate a comprehensive summary with context-aware screenshots automatically.")
 
-    st.subheader("✨ Demo")
+
+    st.subheader("✨ Example Video")
     st.video("https://youtu.be/qJeaCHQ1k2w?si=Q7R6Yq9He9CEVrlW")
 
+    
     # Input area
     url = st.text_input("Enter YouTube Video URL", value="https://youtu.be/qJeaCHQ1k2w?si=Q7R6Yq9He9CEVrlW", placeholder="https://www.youtube.com/watch?v=...")
+    with st.popover("⚙️ Settings"):
+        # Model Selection
+        available_models = (
+            "gemini-2.0-flash",
+            "gemini-1.5-flash-latest", 
+            "gemini-1.5-pro-latest", 
+            "gemini-pro"
+        )
+        
+        # Use settings.MODEL_NAME as the default if it's in our list
+        try:
+            default_index = available_models.index(settings.MODEL_NAME)
+        except ValueError:
+            default_index = 0 # Fallback to the first item
 
-    if st.button("Generate Guide", type="primary"):
+        model_name = st.selectbox(
+            "Choose a model:",
+            available_models,
+            index=default_index,
+            help="Select the AI model to use for generation."
+        )
+
+        # Prompt Configuration
+        summarization_prompt = st.text_area(
+            "Summarization Prompt",
+            value=SUMMARIZATION_PROMPT,
+            height=200,
+            help="The prompt used to generate the summary."
+        )
+        
+        topic_extraction_prompt = st.text_area(
+            "Topic Extraction Prompt",
+            value=TOPIC_EXTRACTION_PROMPT,
+            height=200,
+            help="The prompt used to extract topics from the summary."
+        )
+    
+    if st.button("Generate Guide", type="primary", use_container_width=True):
         if not url:
             st.warning("Please enter a valid YouTube URL.")
             return
@@ -179,7 +213,9 @@ def main():
                 step_count = 0
                 total_estimated_steps = 8
                 
-                for state in run_snapscholar_stream(url):
+                for state in run_snapscholar_stream(
+                    url, model_name, summarization_prompt, topic_extraction_prompt
+                ):
                     final_state = state
                     current_step = state.get("current_step", "")
                     
@@ -243,7 +279,9 @@ def main():
 
         # Render content within a styled container
         with st.container(border=True):
+            st.markdown("<div style='font-size: 3.2rem;'>", unsafe_allow_html=True)
             render_study_guide(doc_path)
+            st.markdown("</div>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()

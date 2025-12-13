@@ -34,8 +34,8 @@ from .state import SnapScholarState
 
 
 # Configure Gemini
-genai.configure(api_key=settings.GOOGLE_API_KEY)
-gemini_model = genai.GenerativeModel(settings.MODEL_NAME)
+# genai.configure(api_key=settings.GOOGLE_API_KEY)
+# gemini_model = genai.GenerativeModel(settings.MODEL_NAME)
 
 
 def init_state_node(state: SnapScholarState) -> SnapScholarState:
@@ -125,8 +125,17 @@ def summarization_node(state: SnapScholarState) -> SnapScholarState:
 
     video_id = state.get("video_id")
     transcript_text = state.get("transcript_text")
+    model_name = state.get("model_name")
+    summarization_prompt = state.get("summarization_prompt")
+
     if not transcript_text:
         state["errors"].append("Cannot summarize: missing transcript_text.")
+        return state
+    if not model_name:
+        state["errors"].append("Cannot summarize: missing model_name.")
+        return state
+    if not summarization_prompt:
+        state["errors"].append("Cannot summarize: missing summarization_prompt.")
         return state
 
     # --- Caching Logic ---
@@ -137,17 +146,19 @@ def summarization_node(state: SnapScholarState) -> SnapScholarState:
             print("  ✅ Using cached summary.")
             state["summary"] = cached_summary
             return state
-    
+
     print("  Summary not in cache, generating with Gemini...")
     # --- End Caching Logic ---
 
-    prompt = SUMMARIZATION_PROMPT.format(transcript=transcript_text)
+    prompt = summarization_prompt.format(transcript=transcript_text)
 
     try:
+        genai.configure(api_key=settings.GOOGLE_API_KEY)
+        gemini_model = genai.GenerativeModel(model_name)
         response = gemini_model.generate_content(prompt)
         summary_text = response.text.strip()
         state["summary"] = summary_text
-        
+
         # --- Caching Logic ---
         if video_id:
             save_to_cache(cache_key, summary_text)
@@ -225,18 +236,29 @@ def topic_extraction_node(state: SnapScholarState) -> SnapScholarState:
     state["current_step"] = "extract_topics"
 
     summary = state.get("summary")
+    model_name = state.get("model_name")
+    topic_extraction_prompt = state.get("topic_extraction_prompt")
+
     if not summary:
         state["errors"].append("Cannot extract sections: missing summary.")
         return state
+    if not model_name:
+        state["errors"].append("Cannot extract topics: missing model_name.")
+        return state
+    if not topic_extraction_prompt:
+        state["errors"].append("Cannot extract topics: missing topic_extraction_prompt.")
+        return state
 
-    prompt = TOPIC_EXTRACTION_PROMPT.format(summary=summary)
+    prompt = topic_extraction_prompt.format(summary=summary)
 
     try:
+        genai.configure(api_key=settings.GOOGLE_API_KEY)
+        gemini_model = genai.GenerativeModel(model_name)
         response = gemini_model.generate_content(prompt)
         raw = response.text or ""
 
         parsed = _safe_json_from_text(raw)
-        
+
         # Try both "sections" and "topics" keys
         sections = parsed.get("sections") or parsed.get("topics", [])
 
@@ -248,12 +270,12 @@ def topic_extraction_node(state: SnapScholarState) -> SnapScholarState:
         if not sections:
             state["errors"].append("No sections extracted from summary")
             return state
-        
+
         print(f"  📚 Extracted {len(sections)} sections from summary")
-        
+
         # Filter sections (remove only conclusions)
         filtered = filter_sections_for_visuals(sections, summary)
-        
+
         # Ensure minimum sections
         if len(filtered) < settings.MIN_SECTIONS_FOR_VISUALS and len(sections) >= settings.MIN_SECTIONS_FOR_VISUALS:
             print(f"  ⚠️ Only {len(filtered)} sections kept, using first {settings.MIN_SECTIONS_FOR_VISUALS}-{settings.MAX_SECTIONS_FOR_VISUALS}")
@@ -261,17 +283,17 @@ def topic_extraction_node(state: SnapScholarState) -> SnapScholarState:
             filtered = sections[:settings.MAX_SECTIONS_FOR_VISUALS]
             if filtered and any(kw in filtered[-1].lower() for kw in ['conclusion', 'takeaway', 'summary']):
                 filtered = filtered[:-1]
-        
+
         # Cap at maximum
         if len(filtered) > settings.MAX_SECTIONS_FOR_VISUALS:
             print(f"  ℹ️ Capped at {settings.MAX_SECTIONS_FOR_VISUALS} sections (had {len(filtered)})")
             filtered = filtered[:settings.MAX_SECTIONS_FOR_VISUALS]
-        
+
         # Fallback: use all if still empty
         if not filtered and sections:
             print(f"  ⚠️ No sections after filtering, using all {len(sections)}")
             filtered = sections[:settings.MAX_SECTIONS_FOR_VISUALS]
-        
+
         state["topics"] = filtered
         print(f"  ✅ Selected {len(filtered)} sections for visual extraction")
 
@@ -291,6 +313,7 @@ def topic_timestamp_selection_node(state: SnapScholarState) -> SnapScholarState:
 
     topics = state.get("topics")
     transcript_ts = state.get("transcript_with_timestamps")
+    model_name = state.get("model_name")
 
     if not topics:
         state["errors"].append("Cannot select timestamps: missing sections.")
@@ -298,6 +321,10 @@ def topic_timestamp_selection_node(state: SnapScholarState) -> SnapScholarState:
 
     if not transcript_ts:
         state["errors"].append("Cannot select timestamps: missing transcript.")
+        return state
+    
+    if not model_name:
+        state["errors"].append("Cannot select timestamps: missing model_name.")
         return state
 
     # Use batch prompt for efficiency
@@ -307,9 +334,11 @@ def topic_timestamp_selection_node(state: SnapScholarState) -> SnapScholarState:
     )
 
     try:
+        genai.configure(api_key=settings.GOOGLE_API_KEY)
+        gemini_model = genai.GenerativeModel(model_name)
         response = gemini_model.generate_content(prompt)
         raw = response.text or ""
-        
+
         # Enhanced JSON extraction - handle markdown code blocks
         raw = re.sub(r'```json\s*', '', raw)
         raw = re.sub(r'```\s*', '', raw)
@@ -322,7 +351,7 @@ def topic_timestamp_selection_node(state: SnapScholarState) -> SnapScholarState:
             print(f"Error: {parse_err}")
             print(f"Raw response (first 500 chars):\n{raw[:500]}")
             print("==========================\n")
-            
+
             if raw.startswith('['):
                 try:
                     parsed = {"screenshots": json.loads(raw)}
@@ -330,7 +359,7 @@ def topic_timestamp_selection_node(state: SnapScholarState) -> SnapScholarState:
                     raise parse_err
             else:
                 raise parse_err
-        
+
         screenshots = parsed.get("screenshots", [])
 
         if not isinstance(screenshots, list):
@@ -343,7 +372,7 @@ def topic_timestamp_selection_node(state: SnapScholarState) -> SnapScholarState:
                 continue
 
             ts = item.get("timestamp")
-            
+
             # Handle different timestamp formats
             try:
                 # Try direct float conversion
@@ -369,7 +398,7 @@ def topic_timestamp_selection_node(state: SnapScholarState) -> SnapScholarState:
 
             # Handle both "section" and "topic" keys
             section_name = item.get("section") or item.get("topic", "").strip()
-            
+
             if not section_name:
                 print(f"  ⚠️ Missing section name for timestamp {ts}")
                 continue
@@ -383,11 +412,11 @@ def topic_timestamp_selection_node(state: SnapScholarState) -> SnapScholarState:
 
         if not topic_timestamps:
             state["errors"].append("No valid timestamps extracted")
-            
+
             # Fallback: create default timestamps
             print("  ⚠️ No timestamps from LLM, using fallback strategy")
             video_duration = state.get("video_duration", 600)
-            
+
             num_topics = len(topics)
             for i, topic in enumerate(topics):
                 timestamp = 30 + (video_duration - 60) * (i + 1) / (num_topics + 1)
@@ -397,7 +426,7 @@ def topic_timestamp_selection_node(state: SnapScholarState) -> SnapScholarState:
                     "caption": f"Visual for {topic}",
                     "reason": "Fallback: evenly distributed"
                 })
-            
+
             print(f"  ✅ Created {len(topic_timestamps)} fallback timestamps")
         else:
             print(f"  ✅ Selected {len(topic_timestamps)} timestamps for sections")
@@ -408,18 +437,18 @@ def topic_timestamp_selection_node(state: SnapScholarState) -> SnapScholarState:
 
     except Exception as e:
         state["errors"].append(f"Timestamp selection failed: {e}")
-        
+
         # Final fallback
         print(f"  ❌ Timestamp selection failed: {e}")
         print("  ⚠️ Using emergency fallback: evenly distributed timestamps")
-        
+
         topics = state.get("topics", [])
         video_duration = state.get("video_duration", 600)
-        
+
         if topics and video_duration:
             fallback_timestamps = []
             num_topics = len(topics)
-            
+
             for i, topic in enumerate(topics):
                 timestamp = 30 + (video_duration - 60) * (i + 1) / (num_topics + 1)
                 fallback_timestamps.append({
@@ -428,7 +457,7 @@ def topic_timestamp_selection_node(state: SnapScholarState) -> SnapScholarState:
                     "caption": f"Visual for {topic}",
                     "reason": "Emergency fallback"
                 })
-            
+
             state["topic_timestamps"] = fallback_timestamps
             print(f"  ✅ Created {len(fallback_timestamps)} emergency fallback timestamps")
 

@@ -52,6 +52,11 @@ class SnapScholarState(TypedDict, total=False):
     
     # Final output
     document_link: Optional[str]
+
+    # Config
+    model_name: Optional[str]
+    summarization_prompt: Optional[str]
+    topic_extraction_prompt: Optional[str]
     
     # Error handling
     errors: List[str]
