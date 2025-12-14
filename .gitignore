@@ -56,3 +56,12 @@ data/temp/*
 # OS
 Thumbs.db
 Desktop.ini
+
+# Installers & Binaries
+*.msi
+*.exe
+*.dmg
+*.pkg
+*.deb
+*.rpm
+pandoc-*
