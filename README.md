@@ -812,7 +812,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Course**: Applied Language Models
 - **Institution**: Google & Reichman Tech School
 - **Duration**: 2-week intensive project
-- **Date**: December 2024
+- **Date**: December 2025
 
 ---
 
