@@ -10,7 +10,7 @@ Transform educational YouTube videos into comprehensive study materials with AI-
 [![Gemini 2.0](https://img.shields.io/badge/Gemini-2.0_Flash-green.svg)](https://ai.google.dev/)
 
 > 📚 Applied Language Models Group Project  
-> Google & Reichman Tech School, December 2024  
+> Google & Reichman Tech School, December 2025  
 > **Team:** Haya Salameh & Amal Zubidat
 
 ---
@@ -805,8 +805,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Team
 
-**Haya Salameh** - [GitHub](https://github.com/hayasalameh) | [LinkedIn](https://linkedin.com/in/hayasalameh)  
-**Amal Zubidat** - [GitHub](https://github.com/amalzubidat) | [LinkedIn](https://linkedin.com/in/amalzubidat)
+**Haya Salameh** - [GitHub](https://github.com/h-a-y-a-s) | [LinkedIn](https://www.linkedin.com/in/haya-salami/)  
+**Amal Zubidat** - [GitHub](https://github.com/AmalZubidat) | [LinkedIn](https://www.linkedin.com/in/amalzubidat/)
 
 ### Course Information
 - **Course**: Applied Language Models
@@ -830,7 +830,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Issues**: [GitHub Issues](https://github.com/yourusername/snapscholar/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/yourusername/snapscholar/discussions)
-- **Email**: haya.salameh@example.com, amal.zubidat@example.com
+- **Email**: haya.salami@gmail.com, amalzubidat@gmail.com
 
 ---
 
