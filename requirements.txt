@@ -22,7 +22,8 @@ google-auth-oauthlib>=1.1.0
 
 # Image Processing
 Pillow>=10.2.0
-opencv-python>=4.8.0
+#opencv-python>=4.8.0
+opencv-python-headless>=4.8.0
 
 # Utils
 requests>=2.31.0
