@@ -116,6 +116,11 @@ def transcript_node(state: SnapScholarState) -> SnapScholarState:
     return state
 
 
+def _get_gemini_model(model_name: str) -> genai.GenerativeModel:
+    """Configure and return a Gemini model instance."""
+    genai.configure(api_key=settings.GOOGLE_API_KEY)
+    return genai.GenerativeModel(model_name)
+
 def summarization_node(state: SnapScholarState) -> SnapScholarState:
     """
     Use Gemini to create structured study guide with ## Section ## markers
@@ -153,8 +158,7 @@ def summarization_node(state: SnapScholarState) -> SnapScholarState:
     prompt = summarization_prompt.format(transcript=transcript_text)
 
     try:
-        genai.configure(api_key=settings.GOOGLE_API_KEY)
-        gemini_model = genai.GenerativeModel(model_name)
+        gemini_model = _get_gemini_model(model_name)
         response = gemini_model.generate_content(prompt)
         summary_text = response.text.strip()
         state["summary"] = summary_text
@@ -252,8 +256,7 @@ def topic_extraction_node(state: SnapScholarState) -> SnapScholarState:
     prompt = topic_extraction_prompt.format(summary=summary)
 
     try:
-        genai.configure(api_key=settings.GOOGLE_API_KEY)
-        gemini_model = genai.GenerativeModel(model_name)
+        gemini_model = _get_gemini_model(model_name)
         response = gemini_model.generate_content(prompt)
         raw = response.text or ""
 
@@ -334,8 +337,7 @@ def topic_timestamp_selection_node(state: SnapScholarState) -> SnapScholarState:
     )
 
     try:
-        genai.configure(api_key=settings.GOOGLE_API_KEY)
-        gemini_model = genai.GenerativeModel(model_name)
+        gemini_model = _get_gemini_model(model_name)
         response = gemini_model.generate_content(prompt)
         raw = response.text or ""
 

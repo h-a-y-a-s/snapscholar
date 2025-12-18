@@ -129,13 +129,42 @@ def main():
         st.title("SnapScholar")
         st.caption("Turn Videos into Visual Study Guides")
         
+        # --- API Key Input ---
         st.markdown("---")
-        st.markdown("### How it works")
-        st.markdown("""
-        1. **Paste** a YouTube URL.
-        2. **Process** the video.
-        3. **Read** the visual summary.
-        """)
+
+        # Check if the API key is already loaded and valid
+        api_key_loaded = "google_api_key" in st.session_state and st.session_state.google_api_key
+        if api_key_loaded:
+            st.success("✅ Google API Key Loaded")
+            # Update env and settings on every run to be safe
+            os.environ["GOOGLE_API_KEY"] = st.session_state.google_api_key
+            settings.GOOGLE_API_KEY = st.session_state.google_api_key
+
+        # Expander for API key settings
+        with st.expander("🔑 API Key Configuration", expanded=not api_key_loaded):
+            st.info(
+                "Get your Google API key from [Google AI Studio](https://aistudio.google.com/). "
+                "Click **'Get API Key'** in the top right and create a new key."
+            )
+            
+            api_key = st.text_input(
+                "Enter your Google API Key", 
+                type="password", 
+                key="api_key_input",
+                placeholder="Enter your key and press 'Save Key'",
+                label_visibility="collapsed"
+            )
+
+            if st.button("Save Key"):
+                if api_key:
+                    st.session_state.google_api_key = api_key
+                    os.environ["GOOGLE_API_KEY"] = api_key
+                    settings.GOOGLE_API_KEY = api_key
+                    st.success("API Key saved!")
+                    time.sleep(0.5)  # Short delay for UI update
+                    st.rerun()
+                else:
+                    st.warning("Please enter a valid API key.")
         
         st.markdown("---")
         if settings.USE_TOPIC_BASED_SELECTION:
@@ -145,11 +174,27 @@ def main():
     st.title("🎓 Video to Study Guide")
     st.markdown("Generate a comprehensive summary with context-aware screenshots automatically.")
 
+    with st.expander("ℹ️ About & How to Use", expanded=True):
+        st.markdown("""
+        **SnapScholar is designed to help you learn faster and more effectively from educational videos.**
+
+        Simply paste a YouTube link, and the app will generate a comprehensive study guide complete with:
+        - A full transcript and AI-powered summary.
+        - Key topics and concepts explained.
+        - Context-aware screenshots placed directly into the narrative to visualize important moments.
+
+        You can read the guide directly in the app or download it as a DOCX file for offline use.
+
+        **How to Use:**
+        1. **Configure API Key:** Use the 'API Key Configuration' section in the sidebar to add your Google API key. You only need to do this once.
+        2. **Paste YouTube URL:** Add the link to the video you want to summarize.
+        3. **Click 'Generate Guide':** Let SnapScholar work its magic.
+        4. **Review & Download:** Your visual study guide will appear, ready to be read or downloaded as a DOCX file.
+        """)
 
     st.subheader("✨ Example Video")
     st.video("https://youtu.be/qJeaCHQ1k2w?si=Q7R6Yq9He9CEVrlW")
 
-    
     # Input area
     url = st.text_input("Enter YouTube Video URL", value="https://youtu.be/qJeaCHQ1k2w?si=Q7R6Yq9He9CEVrlW", placeholder="https://www.youtube.com/watch?v=...")
     with st.popover("⚙️ Settings"):
@@ -161,11 +206,10 @@ def main():
             "gemini-pro"
         )
         
-        # Use settings.MODEL_NAME as the default if it's in our list
         try:
             default_index = available_models.index(settings.MODEL_NAME)
         except ValueError:
-            default_index = 0 # Fallback to the first item
+            default_index = 0
 
         model_name = st.selectbox(
             "Choose a model:",
@@ -175,66 +219,45 @@ def main():
         )
 
         # Prompt Configuration
-        summarization_prompt = st.text_area(
-            "Summarization Prompt",
-            value=SUMMARIZATION_PROMPT,
-            height=200,
-            help="The prompt used to generate the summary."
-        )
-        
-        topic_extraction_prompt = st.text_area(
-            "Topic Extraction Prompt",
-            value=TOPIC_EXTRACTION_PROMPT,
-            height=200,
-            help="The prompt used to extract topics from the summary."
-        )
-    
-    if st.button("Generate Guide", type="primary", use_container_width=True):
+        summarization_prompt = st.text_area("Summarization Prompt", value=SUMMARIZATION_PROMPT, height=200)
+        topic_extraction_prompt = st.text_area("Topic Extraction Prompt", value=TOPIC_EXTRACTION_PROMPT, height=200)
+
+    # Disable button if API key is not provided
+    api_key_present = hasattr(settings, 'GOOGLE_API_KEY') and settings.GOOGLE_API_KEY
+
+    if not api_key_present:
+        st.warning("Please enter and save your Google API Key in the sidebar to proceed.")
+
+    if st.button("Generate Guide", type="primary", use_container_width=True, disabled=not api_key_present):
         if not url:
             st.warning("Please enter a valid YouTube URL.")
             return
 
-        # Initialize Session State for results
         st.session_state.result_state = None
         
-        # Container for results
-        result_container = st.container()
-        
         try:
-            # Progress tracking
             progress_bar = st.progress(0)
-            status_text = st.empty()
             
             with st.status("Running SnapScholar Pipeline...", expanded=True) as status:
-                
                 final_state = None
-                
-                # Stream the graph execution
                 step_count = 0
                 total_estimated_steps = 8
                 
-                for state in run_snapscholar_stream(
-                    url, model_name, summarization_prompt, topic_extraction_prompt
-                ):
+                for state in run_snapscholar_stream(url, model_name, summarization_prompt, topic_extraction_prompt):
                     final_state = state
                     current_step = state.get("current_step", "")
                     
-                    # Update status
                     msg = get_step_message(current_step)
                     status.write(msg)
                     
-                    # Update progress bar
                     step_count += 1
                     progress = min(step_count / total_estimated_steps, 0.95)
                     progress_bar.progress(progress)
                 
-                # Completion
                 progress_bar.progress(1.0)
                 status.update(label="✅ Processing Complete!", state="complete", expanded=False)
                 
-            # Handle Errors or Success
             if final_state and final_state.get("errors"):
-                st.error("Errors occurred during processing:")
                 for err in final_state["errors"]:
                     st.error(f"- {err}")
             
@@ -245,7 +268,7 @@ def main():
         except Exception as e:
             st.error(f"An unexpected error occurred: {str(e)}")
 
-    # --- Display Results (Persistent) ---
+    # --- Display Results ---
     if "result_state" in st.session_state and st.session_state.result_state:
         state = st.session_state.result_state
         doc_path = state.get("document_link")
@@ -254,9 +277,7 @@ def main():
         st.subheader("📚 Generated Study Guide")
         
         col1, col2 = st.columns(2)
-
         with col1:
-            # Convert markdown to docx
             docx_path = convert_md_to_docx(doc_path)
             if docx_path and os.path.exists(docx_path):
                 with open(docx_path, "rb") as file:
@@ -267,21 +288,12 @@ def main():
                         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                         use_container_width=True
                     )
-        
         with col2:
             if st.button("🎉 Celebrate!", use_container_width=True):
-                effects = [
-                    st.balloons,
-                    st.snow,
-                    lambda: st.success(f"Great job! {random.choice(['🥳', '🎊', '✨', '🤩'])}")
-                ]
-                random.choice(effects)()
+                random.choice([st.balloons, st.snow, lambda: st.success("🎉🎉🎉")])()
 
-        # Render content within a styled container
         with st.container(border=True):
-            st.markdown("<div style='font-size: 3.2rem;'>", unsafe_allow_html=True)
             render_study_guide(doc_path)
-            st.markdown("</div>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()

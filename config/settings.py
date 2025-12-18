@@ -10,8 +10,8 @@ load_dotenv()
 class Settings:
     """Application settings"""
     
-    # API Keys
-    GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+    # API Keys - Initialize as None to force user input
+    GOOGLE_API_KEY = None
     
     # Google Drive
     GOOGLE_CREDENTIALS_PATH = os.getenv("GOOGLE_CREDENTIALS_PATH", "credentials.json")
@@ -71,8 +71,9 @@ class Settings:
         self.TEMP_DIR.mkdir(parents=True, exist_ok=True)
     
     def validate(self):
-        if not self.GOOGLE_API_KEY:
-            raise ValueError("GOOGLE_API_KEY not found in .env file")
+        # We will validate the API key within the app logic itself
+        # if not self.GOOGLE_API_KEY:
+        #     raise ValueError("GOOGLE_API_KEY not found in .env file")
         return True
 
 settings = Settings()
