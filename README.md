@@ -240,10 +240,5 @@ December 2025
 
 ---
 
-## 📝 License
-
-Academic project - part of Applied Language Models course
-
----
 
 **Ready to transform your video learning?** → **[Try SnapScholar Now](https://snapscholar.streamlit.app/)**
