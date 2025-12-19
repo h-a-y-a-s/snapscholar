@@ -39,20 +39,41 @@ def step1_extract_data(csv_file):
     df = pd.read_csv(csv_file)
     print(f"✓ Loaded {len(df)} responses")
     
-    # Find columns
+    # Find columns - handle long Google Forms column names
     columns_found = {}
     for col in df.columns:
         col_lower = col.lower()
-        if 'url' in col_lower:
+        
+        # Video URL
+        if 'video url' in col_lower or col == 'Video URL':
             columns_found['url'] = col
-        elif 'title' in col_lower:
+        
+        # Video title
+        elif 'video title' in col_lower or col == 'Video title':
             columns_found['title'] = col
-        elif 'summary' in col_lower and 'screenshot' not in col_lower:
+        
+        # Summary score - look for "Summary Accuracy" or "accuracy and clarity"
+        elif ('summary' in col_lower and 'accuracy' in col_lower) or 'accuracy and clarity' in col_lower:
             columns_found['summary'] = col
-        elif 'screenshot' in col_lower:
+        
+        # Screenshot score - look for "Snapshots Quality" or "quality and relevance"  
+        elif ('snapshot' in col_lower and 'quality' in col_lower) or 'quality and relevance' in col_lower or 'quality and releveance' in col_lower:
             columns_found['screenshot'] = col
     
-    print(f"✓ Found columns: {list(columns_found.values())}")
+    # Check we found all required columns
+    required = ['url', 'title', 'summary', 'screenshot']
+    missing = [r for r in required if r not in columns_found]
+    
+    if missing:
+        print(f"❌ Could not find columns for: {missing}")
+        print(f"\nAvailable columns:")
+        for i, col in enumerate(df.columns, 1):
+            print(f"  {i}. {col}")
+        return []
+    
+    print(f"✓ Found required columns:")
+    for key, col in columns_found.items():
+        print(f"  - {key}: '{col}'")
     
     # Extract data
     videos = []
@@ -100,33 +121,71 @@ def step1_extract_data(csv_file):
     
     print(f"✓ Extracted {len(videos)} videos with scores")
     
+    # Ensure we're saving in eval directory
+    output_dir = os.path.dirname(os.path.abspath(__file__))
+    
     # Save URLs only
-    with open('video_urls.txt', 'w') as f:
+    urls_file = os.path.join(output_dir, 'video_urls.txt')
+    with open(urls_file, 'w') as f:
         for v in videos:
             f.write(f"{v['url']}\n")
-    print(f"✓ Saved URLs to video_urls.txt")
+    print(f"✓ Saved URLs to {urls_file}")
     
     # Save complete data
-    with open('videos_data.json', 'w') as f:
+    data_file = os.path.join(output_dir, 'videos_data.json')
+    with open(data_file, 'w') as f:
         json.dump(videos, f, indent=2)
-    print(f"✓ Saved complete data to videos_data.json")
+    print(f"✓ Saved complete data to {data_file}")
     
     return videos
 
 
-def step2_check_study_guides(videos, study_guides_dir='../study_guides'):
+def step2_check_study_guides(videos, study_guides_dir=None):
     """Step 2: Check which videos have study guides"""
     
     print("\n" + "="*70)
     print("STEP 2: Checking Study Guides")
     print("="*70)
     
-    if not os.path.exists(study_guides_dir):
-        print(f"⚠ Directory not found: {study_guides_dir}")
+    # Auto-detect study guides directory
+    if study_guides_dir is None:
+        # Try multiple possible paths
+        possible_paths = [
+            '../data/temp',
+            'data/temp',
+            os.path.join('..', 'data', 'temp'),
+            os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'temp'))
+        ]
+        
+        study_guides_dir = None
+        for path in possible_paths:
+            if os.path.exists(path):
+                study_guides_dir = path
+                print(f"✓ Found study guides directory: {os.path.abspath(path)}")
+                break
+    
+    if study_guides_dir is None or not os.path.exists(study_guides_dir):
+        print(f"⚠ Study guides directory not found")
+        print(f"\nTried these paths:")
+        for path in possible_paths:
+            abs_path = os.path.abspath(path)
+            exists = "✓" if os.path.exists(path) else "✗"
+            print(f"  {exists} {abs_path}")
+        
         print("\nYou need to:")
         print("  1. Create study guides for these videos using SnapScholar")
-        print("  2. Save them in the '../study_guides/' directory")
-        print(f"  3. Name them: <video_id>.json")
+        print("  2. Save them in the 'data/temp/' directory")
+        print(f"  3. Each video in its own folder: data/temp/<video_id>/study_guide.docx")
+        return []
+    
+    # List what's in the directory
+    try:
+        folders = [f for f in os.listdir(study_guides_dir) if os.path.isdir(os.path.join(study_guides_dir, f))]
+        print(f"✓ Found {len(folders)} folders in {study_guides_dir}")
+        if folders:
+            print(f"  First few: {folders[:5]}")
+    except Exception as e:
+        print(f"⚠ Could not list directory: {e}")
         return []
     
     # Check which videos have study guides
@@ -135,17 +194,26 @@ def step2_check_study_guides(videos, study_guides_dir='../study_guides'):
     
     for video in videos:
         video_id = video['video_id']
+        
+        # Look for study guide in data/temp/{video_id}/ directory
+        video_dir = os.path.join(study_guides_dir, video_id)
+        
+        if not os.path.exists(video_dir):
+            missing.append(video)
+            continue
+        
+        # Check for study_guide files (try multiple formats)
         possible_files = [
-            f"{video_id}.json",
-            f"{video_id}.docx",
-            f"{video['title'].lower().replace(' ', '_')}.json"
+            os.path.join(video_dir, 'study_guide.docx'),
+            os.path.join(video_dir, 'study_guide.md'),
+            os.path.join(video_dir, 'study_guide.json'),
         ]
         
         found = False
-        for filename in possible_files:
-            filepath = os.path.join(study_guides_dir, filename)
+        for filepath in possible_files:
             if os.path.exists(filepath):
                 video['study_guide_path'] = filepath
+                video['study_guide_format'] = os.path.splitext(filepath)[1]
                 matched.append(video)
                 found = True
                 break
@@ -189,10 +257,43 @@ def step3_run_evaluation(matched_videos, api_key):
     
     for i, video in enumerate(matched_videos, 1):
         print(f"\n[{i}/{len(matched_videos)}] Evaluating: {video['title']}")
+        print(f"  Study guide: {video['study_guide_path']}")
         
-        # Load study guide
-        with open(video['study_guide_path'], 'r', encoding='utf-8') as f:
-            study_guide = json.load(f)
+        # Load study guide based on format
+        try:
+            study_guide_format = video.get('study_guide_format', '')
+            
+            if study_guide_format == '.json':
+                # Load JSON
+                with open(video['study_guide_path'], 'r', encoding='utf-8') as f:
+                    study_guide = json.load(f)
+            
+            elif study_guide_format == '.md':
+                # Load Markdown as text
+                with open(video['study_guide_path'], 'r', encoding='utf-8') as f:
+                    md_content = f.read()
+                study_guide = {
+                    'type': 'markdown',
+                    'content': md_content
+                }
+            
+            elif study_guide_format == '.docx':
+                # Load DOCX as text
+                from docx import Document
+                doc = Document(video['study_guide_path'])
+                docx_content = '\n'.join([para.text for para in doc.paragraphs])
+                study_guide = {
+                    'type': 'docx',
+                    'content': docx_content
+                }
+            
+            else:
+                print(f"  ⚠ Unknown format: {study_guide_format}")
+                continue
+        
+        except Exception as e:
+            print(f"  ✗ Error loading study guide: {e}")
+            continue
         
         # Create video info
         video_info = {
@@ -224,14 +325,19 @@ def step3_run_evaluation(matched_videos, api_key):
             print(f"  ✓ Human: {video['overall_score']:.1f}, LLM: {llm_result.overall_score:.1f}")
             
         except Exception as e:
-            print(f"  ✗ Error: {e}")
+            print(f"  ✗ Error evaluating: {e}")
+            import traceback
+            traceback.print_exc()
     
     print(f"\n✓ Evaluated {len(results)} videos")
     
-    # Save results
-    with open('evaluation_results.json', 'w', encoding='utf-8') as f:
+    # Save results in eval directory
+    output_dir = os.path.dirname(os.path.abspath(__file__))
+    results_file = os.path.join(output_dir, 'evaluation_results.json')
+    
+    with open(results_file, 'w', encoding='utf-8') as f:
         json.dump(results, f, indent=2, ensure_ascii=False)
-    print(f"✓ Saved results to evaluation_results.json")
+    print(f"✓ Saved results to {results_file}")
     
     return results
 
@@ -302,10 +408,13 @@ def step4_compute_correlation(results):
     else:
         print(f"⚠ Not statistically significant (p ≥ 0.05)")
     
-    # Save
-    with open('correlation_results.json', 'w', encoding='utf-8') as f:
+    # Save in eval directory
+    output_dir = os.path.dirname(os.path.abspath(__file__))
+    corr_file = os.path.join(output_dir, 'correlation_results.json')
+    
+    with open(corr_file, 'w', encoding='utf-8') as f:
         json.dump(correlations, f, indent=2)
-    print(f"\n✓ Saved to correlation_results.json")
+    print(f"\n✓ Saved to {corr_file}")
     
     return correlations
 
@@ -352,8 +461,13 @@ def step5_create_visualization(results, correlations):
     plt.ylim(0.5, 5.5)
     
     plt.tight_layout()
-    plt.savefig('correlation_plot.png', dpi=300, bbox_inches='tight')
-    print(f"✓ Saved visualization to correlation_plot.png")
+    
+    # Save in eval directory
+    output_dir = os.path.dirname(os.path.abspath(__file__))
+    plot_file = os.path.join(output_dir, 'correlation_plot.png')
+    
+    plt.savefig(plot_file, dpi=300, bbox_inches='tight')
+    print(f"✓ Saved visualization to {plot_file}")
     plt.close()
 
 
@@ -364,19 +478,23 @@ def main():
     print("SNAPSCHOLAR: COMPLETE EVALUATION WORKFLOW")
     print("="*70)
     
-    # Check for CSV file
-    csv_files = [f for f in os.listdir('.') if f.endswith('.csv')]
+    # Get the directory where this script is located (eval/)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Check for CSV file in the script's directory
+    csv_files = [f for f in os.listdir(script_dir) if f.endswith('.csv')]
     
     if not csv_files:
-        print("\n❌ No CSV file found in current directory")
+        print("\n❌ No CSV file found in eval/ directory")
         print("\nTo use this script:")
         print("1. Convert your Excel file to CSV:")
-        print("   python -c \"import pandas as pd; pd.read_excel('SnapScholar Study Guide Evaluation Form (Responses).xlsx').to_csv('form_responses.csv', index=False)\"")
-        print("2. Or manually: Open Excel → File → Save As → CSV")
+        print("   cd eval")
+        print("   python -c \"import pandas as pd; pd.read_excel('../SnapScholar Study Guide Evaluation Form (Responses).xlsx').to_csv('form_responses.csv', index=False)\"")
+        print("2. Or manually: Open Excel → File → Save As → CSV (save in eval/ folder)")
         print("3. Run: python complete_workflow.py")
         return
     
-    csv_file = csv_files[0]
+    csv_file = os.path.join(script_dir, csv_files[0])
     print(f"\n✓ Using CSV file: {csv_file}")
     
     # Check for API key - try GOOGLE_API_KEY first, then GEMINI_API_KEY
@@ -426,12 +544,16 @@ def main():
     print("\n" + "="*70)
     print("✓✓✓ WORKFLOW COMPLETE! ✓✓✓")
     print("="*70)
-    print("\nGenerated files:")
-    print("  • video_urls.txt - List of video URLs")
-    print("  • videos_data.json - Complete data")
-    print("  • evaluation_results.json - LLM vs Human scores")
-    print("  • correlation_results.json - Statistics")
-    print("  • correlation_plot.png - Visualization")
+    
+    eval_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    print(f"\nGenerated files in eval/ directory:")
+    print(f"  • video_urls.txt - List of video URLs")
+    print(f"  • videos_data.json - Complete data")
+    print(f"  • evaluation_results.json - LLM vs Human scores")
+    print(f"  • correlation_results.json - Statistics")
+    print(f"  • correlation_plot.png - Visualization")
+    print(f"\nLocation: {eval_dir}")
     print("\nYou're ready for your presentation! 🎉")
     print("="*70)
 

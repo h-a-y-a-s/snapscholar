@@ -1,0 +1,77 @@
+[
+  {
+    "video_id": "FgakZw6K1QQ",
+    "title": "StatQuest: Principal Component Analysis (PCA), Step-by-Step",
+    "url": "https://www.youtube.com/watch?v=FgakZw6K1QQ&t=903s",
+    "human": {
+      "summary": 5,
+      "screenshots": 5,
+      "overall": 5.0
+    },
+    "llm": {
+      "summary": 4,
+      "screenshots": 4,
+      "overall": 4.0
+    }
+  },
+  {
+    "video_id": "xLWES956JJE",
+    "title": "fMRI Analysis: Part 1 - Preprocessing",
+    "url": "https://www.youtube.com/watch?v=xLWES956JJE",
+    "human": {
+      "summary": 5,
+      "screenshots": 4,
+      "overall": 4.5
+    },
+    "llm": {
+      "summary": 4,
+      "screenshots": 4,
+      "overall": 4.0
+    }
+  },
+  {
+    "video_id": "RSWuYpjTrk0",
+    "title": "29. Resting State: Independent Component Analysis (Rest E2)",
+    "url": "https://www.youtube.com/watch?v=RSWuYpjTrk0&list=PLvgasosJnUVl_bt8VbERUyCLU93OG31h_&index=29",
+    "human": {
+      "summary": 4,
+      "screenshots": 2,
+      "overall": 3.0
+    },
+    "llm": {
+      "summary": 4,
+      "screenshots": 3,
+      "overall": 3.5
+    }
+  },
+  {
+    "video_id": "zeJD6dqJ5lo",
+    "title": "But what is the Central Limit Theorem?",
+    "url": "https://youtu.be/zeJD6dqJ5lo?si=yeYTRDdA7KC02rWK",
+    "human": {
+      "summary": 5,
+      "screenshots": 4,
+      "overall": 4.5
+    },
+    "llm": {
+      "summary": 4,
+      "screenshots": 3,
+      "overall": 3.5
+    }
+  },
+  {
+    "video_id": "spUNpyF58BY",
+    "title": "But what is the Fourier Transform? A visual introduction.",
+    "url": "https://www.youtube.com/watch?v=spUNpyF58BY",
+    "human": {
+      "summary": 4,
+      "screenshots": 3,
+      "overall": 3.5
+    },
+    "llm": {
+      "summary": 4,
+      "screenshots": 4,
+      "overall": 4.0
+    }
+  }
+]
