@@ -22,7 +22,6 @@ google-auth-oauthlib>=1.1.0
 
 # Image Processing
 Pillow>=10.2.0
-#opencv-python>=4.8.0
 opencv-python-headless>=4.8.0
 
 # Utils
@@ -38,8 +37,23 @@ numpy>=1.24.0
 # Caching
 diskcache>=5.6.1 
 
-#streamlit
-streamlit>=1.32.0
-
 # Pandoc
 pypandoc>=1.12
+
+# ==========================================
+# EVALUATION SYSTEM (NEW - Add these)
+# ==========================================
+
+# Data analysis for correlation
+scipy>=1.10.0
+pandas>=2.0.0  # You already have numpy
+
+# Visualization for correlation plots
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Excel file support for Google Forms export
+openpyxl>=3.1.0
+
+# Document handling (if evaluating DOCX study guides)
+python-docx>=0.8.11
