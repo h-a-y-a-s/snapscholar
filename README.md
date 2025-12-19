@@ -106,7 +106,7 @@ That's it! No account needed.
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/snapscholar.git
+git clone https://github.com/h-a-y-a-s/snapscholar.git
 cd snapscholar
 ```
 
