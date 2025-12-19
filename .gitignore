@@ -65,3 +65,17 @@ Desktop.ini
 *.deb
 *.rpm
 pandoc-*
+# Sensitive evaluation data files
+*.xlsx
+*.xls
+*.csv
+eval/form_responses.csv
+eval/*.xlsx
+SnapScholar Study Guide Evaluation Form (Responses).xlsx
+
+# Evaluation results (optional - uncomment if you don't want to track these)
+# eval/evaluation_results.json
+# eval/correlation_results.json
+# eval/videos_data.json
+# eval/video_urls.txt
+# eval/correlation_plot.png
