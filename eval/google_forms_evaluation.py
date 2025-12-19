@@ -153,20 +153,42 @@ EVALUATION CRITERIA:
 
 {SCORING_CRITERIA['screenshots_quality']}
 
-IMPORTANT:
-- Use ONLY integers 1, 2, 3, 4, or 5
-- Provide specific reasoning for each score
-- Be consistent with the criteria descriptions
+CRITICAL INSTRUCTIONS FOR SCORING:
 
+1. USE THE FULL RANGE (1-5):
+   - Be discriminating - not all study guides are the same quality
+   - Only give 5 if truly excellent with NO issues whatsoever
+   - Give 4 for good quality with only minor, forgivable issues
+   - Give 3 for acceptable but with noticeable gaps or problems
+   - Give 2 for poor quality with significant errors or missing content
+   - Give 1 for completely unusable or severely flawed content
+
+2. BE SPECIFIC:
+   - Don't default to "middle" scores
+   - Look for actual differences between study guides
+   - Compare against the ideal, not against other examples
+
+3. EVALUATE INDEPENDENTLY:
+   - Rate summary accuracy separately from screenshots
+   - One can be excellent while the other is poor
+
+4. BE HONEST:
+   - If something is truly excellent, say so (5)
+   - If something has real problems, say so (2 or 3)
+   - Most study guides should NOT all get the same score
+
+RESPONSE FORMAT:
 Respond in this EXACT JSON format:
 {{
     "summary_accuracy": <integer 1-5>,
     "screenshots_quality": <integer 1-5>,
     "reasoning": {{
-        "summary_accuracy": "<detailed explanation>",
-        "screenshots_quality": "<detailed explanation>"
+        "summary_accuracy": "<detailed explanation of score, mentioning specific strengths/weaknesses>",
+        "screenshots_quality": "<detailed explanation of score, mentioning specific strengths/weaknesses>"
     }}
-}}"""
+}}
+
+REMEMBER: Use integers only (1, 2, 3, 4, or 5). Be discriminating and use the full range!"""
         
         return prompt
     
