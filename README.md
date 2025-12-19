@@ -17,7 +17,7 @@ SnapScholar turns educational YouTube videos into **structured study guides** wi
 **The Problem:**
 - Watching videos alone leads to **low retention** - you forget most of what you watch
 - Manual note-taking and screenshots are **time-consuming** (as long as the video itself!)
-- Visual explanations improve learning by 65%, but **finding the right moments is hard**
+- Visual explanations improve learning, but **finding the right moments is hard**
 
 **Our Solution:**
 SnapScholar **automates the full learning-to-notes pipeline** - from any educational YouTube video to a comprehensive study guide in under 60 seconds.
