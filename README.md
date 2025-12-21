@@ -19,7 +19,7 @@ SnapScholar turns educational YouTube videos into **structured study guides** wi
 - Visual explanations improve learning, but **finding the right moments is hard**
 
 **Our Solution:**
-SnapScholar **automates the full learning-to-notes pipeline** - from any educational YouTube video to a comprehensive study guide in under 60 seconds.
+SnapScholar **automates the full learning-to-notes pipeline** - from any educational YouTube video to a comprehensive study guide in under 1-2 mins.
 
 ## Key features
 
@@ -27,7 +27,7 @@ SnapScholar **automates the full learning-to-notes pipeline** - from any educati
 - **Intelligent Screenshot Selection** – Automatically extracts the most relevant visual frames based on transcript analysis and topic alignment
 - **Agentic AI Workflow** – Built with LangGraph orchestrating 8 specialized processing nodes for robust end-to-end automation
 - **Computer Vision Validation** – OpenCV ensures screenshot quality (brightness, blur detection, visual clarity)
-- **Fast & Reliable** – Average processing time of 45-60 seconds per video
+- **Fast & Reliable** – Average processing time of 1-2 mins per video
 - **Professional Output** – Download ready-to-use DOCX study guides with timestamps linking back to original video moments
 
 ---
@@ -110,7 +110,7 @@ streamlit run app.py
 5. **Screenshots are validated** using computer vision (brightness, contrast, content)
 6. **Study guide is assembled** - text + visuals combined into downloadable DOCX
 
-**Processing time:** 45-60 seconds | **Success rate:** 95%
+**Processing time:** 1-2 mins 
 
 
 ## Agentic langGraph workflow
