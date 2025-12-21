@@ -16,56 +16,21 @@ SnapScholar turns educational YouTube videos into **structured study guides** wi
 
 **The Problem:**
 - Watching videos alone leads to **low retention** - you forget most of what you watch
-- Manual note-taking and screenshots are **time-consuming** (as long as the video itself!)
 - Visual explanations improve learning, but **finding the right moments is hard**
 
 **Our Solution:**
 SnapScholar **automates the full learning-to-notes pipeline** - from any educational YouTube video to a comprehensive study guide in under 60 seconds.
 
----
+## Key Features
 
-## Main Features
-
-- **AI-generated structured summaries** - Gemini creates organized, topic-based content
-- **Smart screenshot selection** - Automatically finds the most relevant visual moments based on video transcript
-- **Agentic workflow** - 8 specialized AI agents working in sequence (LangGraph)
-- **Computer vision validation** - Validate screenshots 
-- **Fast processing** - 45-60 seconds average per video
-- 📥 **Downloadable format** - Professional DOCX study guides
+- **AI-Powered Summaries** – Gemini 2.0 Flash generates structured, topic-based content organized into 5-8 logical sections
+- **Intelligent Screenshot Selection** – Automatically extracts the most relevant visual frames based on transcript analysis and topic alignment
+- **Agentic AI Workflow** – Built with LangGraph orchestrating 8 specialized processing nodes for robust end-to-end automation
+- **Computer Vision Validation** – OpenCV ensures screenshot quality (brightness, blur detection, visual clarity)
+- **Fast & Reliable** – Average processing time of 45-60 seconds per video
+- **Professional Output** – Download ready-to-use DOCX study guides with timestamps linking back to original video moments
 
 ---
-
-## What You Get
-
-Your study guide includes:
-- **5-8 organized sections** with AI-generated explanations
-- **Screenshots** aligned with each topic
-- **Timestamp references** linking back to the original video
-- **Downloadable DOCX** - ready to review, print, or share
-
-**Example Output:**
-```
-Study Guide: "Supply and Demand Economics"
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-## Introduction to Economic Principles
-[Screenshot: Market basics diagram - t=45s]
-
-Supply and demand are fundamental concepts that determine 
-market prices...
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-## Market Equilibrium
-[Screenshot: Supply/demand curves - t=312s]
-
-Equilibrium occurs when quantity supplied equals quantity 
-demanded...
-```
-
----
-
 ## How to Use
 
 ### Online (No Installation Required)
@@ -76,8 +41,6 @@ demanded...
 4. Download your DOCX file
 
 That's it! No account needed.
-
----
 
 ### Run Locally
 
@@ -121,6 +84,19 @@ streamlit run app.py
 
 6. **Open browser** to `http://localhost:8501`
 
+---
+## Best Results With
+
+**Ideal videos:**
+- Educational lectures with slides or diagrams
+- Tutorials with step-by-step visuals
+- 10-30 minute length (optimal)
+- Videos with captions/subtitles
+
+**Avoid:**
+- Videos without captions
+- Purely conversational content (podcasts)
+- Music videos or entertainment content
 ---
 
 ## How It Works
@@ -186,10 +162,6 @@ SnapScholar uses **8 specialized AI agents** working in sequence - each handling
 - Streaming progress updates (used by UI)
 - Separation between reasoning, tools, and validation
 
----
-
-## Technologies
-
 **Core Stack:**
 - **LangGraph** - Agentic workflow orchestration
 - **Google Gemini 2.0 Flash** - AI summarization and reasoning
@@ -197,24 +169,6 @@ SnapScholar uses **8 specialized AI agents** working in sequence - each handling
 - **OpenCV** - Computer vision for screenshot validation
 - **YouTube Transcript API** - Caption extraction
 - **yt-dlp** - Video processing
-
-**Key Innovation:**
-Topic-based visual selection (95% accuracy) vs traditional transcript-based approach (60% accuracy)
-
----
-
-## Best Results With
-
-**Ideal videos:**
-- Educational lectures with slides or diagrams
-- Tutorials with step-by-step visuals
-- 10-30 minute length (optimal)
-- Videos with captions/subtitles
-
-**Avoid:**
-- Videos without captions
-- Purely conversational content (podcasts)
-- Music videos or entertainment content
 
 ---
 
