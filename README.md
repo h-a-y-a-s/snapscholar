@@ -6,13 +6,13 @@ SnapScholar turns educational YouTube videos into **structured study guides** wi
 
 🔗 **Live App:** https://snapscholar.streamlit.app/
 
-> 📚 Applied Language Models – Group Project  
+> Applied Language Models – Group Project  
 > Google & Reichman Tech School (Dec 2025)  
 > **Team:** Haya Salameh & Amal Zubidat
 
 ---
 
-## 🎯 Why SnapScholar?
+## Why SnapScholar?
 
 **The Problem:**
 - Watching videos alone leads to **low retention** - you forget most of what you watch
@@ -24,25 +24,25 @@ SnapScholar **automates the full learning-to-notes pipeline** - from any educati
 
 ---
 
-## ✨ Main Features
+## Main Features
 
-- 📄 **AI-generated structured summaries** - Gemini creates organized, topic-based content
-- 🖼️ **Smart screenshot selection** - Automatically finds the most relevant visual moments
-- 🤖 **Agentic workflow** - 8 specialized AI agents working in sequence (LangGraph)
-- 👁️ **Computer vision validation** - Ensures screenshots are clear and informative
-- ⚡ **Fast processing** - 45-60 seconds average per video
-- 💾 **Smart caching** - Instant results for previously processed videos
+- **AI-generated structured summaries** - Gemini creates organized, topic-based content
+- **Smart screenshot selection** - Automatically finds the most relevant visual moments
+- **Agentic workflow** - 8 specialized AI agents working in sequence (LangGraph)
+- **Computer vision validation** - Ensures screenshots are clear and informative
+- **Fast processing** - 45-60 seconds average per video
+- **Smart caching** - Instant results for previously processed videos
 - 📥 **Downloadable format** - Professional DOCX study guides
 
 ---
 
-## 📖 What You Get
+## What You Get
 
 Your study guide includes:
-- ✅ **5-8 organized sections** with AI-generated explanations
-- ✅ **High-quality screenshots** aligned with each topic
-- ✅ **Timestamp references** linking back to the original video
-- ✅ **Downloadable DOCX** - ready to review, print, or share
+- **5-8 organized sections** with AI-generated explanations
+- **High-quality screenshots** aligned with each topic
+- **Timestamp references** linking back to the original video
+- **Downloadable DOCX** - ready to review, print, or share
 
 **Example Output:**
 ```
@@ -67,22 +67,22 @@ demanded...
 
 ---
 
-## 🧭 How It Works
+## How It Works
 
 **Simple 6-step process:**
 
-1. 📺 **User pastes a YouTube link** into the web app
-2. 📝 **Transcript is extracted** with timestamps from YouTube
-3. 🧠 **AI generates a structured summary** organized by topics (Gemini 2.0)
-4. 🎯 **Key visual moments are selected** - one screenshot per topic
-5. 👁️ **Screenshots are validated** using computer vision (brightness, contrast, content)
-6. 📄 **Study guide is assembled** - text + visuals combined into downloadable DOCX
+1. **User pastes a YouTube link** into the web app
+2. **Transcript is extracted** with timestamps from YouTube
+3. **AI generates a structured summary** organized by topics (Gemini 2.0)
+4. **Key visual moments are selected** - one screenshot per topic
+5. **Screenshots are validated** using computer vision (brightness, contrast, content)
+6. **Study guide is assembled** - text + visuals combined into downloadable DOCX
 
 **Processing time:** 45-60 seconds | **Success rate:** 95%
 
 ---
 
-## 🚀 How to Use
+## How to Use
 
 ### Online (No Installation Required)
 
@@ -139,7 +139,7 @@ streamlit run app.py
 
 ---
 
-## 🤖 Powered by LangGraph (Agentic AI Workflow)
+## Powered by LangGraph (Agentic AI Workflow)
 
 SnapScholar uses **8 specialized AI agents** working in sequence - each handling one specific task:
 
@@ -190,7 +190,7 @@ SnapScholar uses **8 specialized AI agents** working in sequence - each handling
 
 ---
 
-## 🧠 Technologies
+## Technologies
 
 **Core Stack:**
 - **LangGraph** - Agentic workflow orchestration
@@ -205,28 +205,18 @@ Topic-based visual selection (95% accuracy) vs traditional transcript-based appr
 
 ---
 
-## 💡 Best Results With
+## Best Results With
 
 **Ideal videos:**
-- ✅ Educational lectures with slides or diagrams
-- ✅ Tutorials with step-by-step visuals
-- ✅ 10-30 minute length (optimal)
-- ✅ Videos with captions/subtitles
+- Educational lectures with slides or diagrams
+- Tutorials with step-by-step visuals
+- 10-30 minute length (optimal)
+- Videos with captions/subtitles
 
 **Avoid:**
-- ❌ Videos without captions
-- ❌ Purely conversational content (podcasts)
-- ❌ Music videos or entertainment content
-
----
-
-## 🔮 Future Enhancements
-
-- 🌍 Multi-language support (Spanish, French, Arabic)
-- ❓ Auto-generated quiz questions
-- 🎴 Flashcard export (Anki/Quizlet)
-- 📚 Batch playlist processing
-- 📱 Mobile app version
+- Videos without captions
+- Purely conversational content (podcasts)
+- Music videos or entertainment content
 
 ---
 
