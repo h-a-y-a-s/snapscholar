@@ -151,17 +151,6 @@ SnapScholar uses **8 specialized AI agents** working in sequence - each handling
         └─────────────────────┘
 ```
 
-**Each agent:**
-- Reads the current state
-- Performs **one responsibility**
-- Updates state and passes forward
-
-**Why LangGraph?**
-- Clear, reproducible pipeline
-- Easy to debug and extend
-- Streaming progress updates (used by UI)
-- Separation between reasoning, tools, and validation
-
 **Core stack:**
 - **LangGraph** - Agentic workflow orchestration
 - **Google Gemini 2.0 Flash** - AI summarization and reasoning
