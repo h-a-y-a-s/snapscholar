@@ -47,7 +47,7 @@ That's it! No account needed.
 **Requirements:**
 - Python **3.11+**
 - Google API key ([get free key](https://makersuite.google.com/app/apikey))
-- `ffmpeg` installed (recommended)
+- `ffmpeg` 
 
 **Setup:**
 
@@ -172,14 +172,8 @@ SnapScholar uses **8 specialized AI agents** working in sequence - each handling
 
 ---
 
-## Team
-
 **Haya Salameh** & **Amal Zubidat**
 
 Applied Language Models Course  
 Google & Reichman Tech School  
 December 2025
-
----
-
-**[Try SnapScholar Now](https://snapscholar.streamlit.app/)**
