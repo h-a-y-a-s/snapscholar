@@ -27,11 +27,10 @@ SnapScholar **automates the full learning-to-notes pipeline** - from any educati
 ## Main Features
 
 - **AI-generated structured summaries** - Gemini creates organized, topic-based content
-- **Smart screenshot selection** - Automatically finds the most relevant visual moments
+- **Smart screenshot selection** - Automatically finds the most relevant visual moments based on video transcript
 - **Agentic workflow** - 8 specialized AI agents working in sequence (LangGraph)
-- **Computer vision validation** - Ensures screenshots are clear and informative
+- **Computer vision validation** - Validate screenshots 
 - **Fast processing** - 45-60 seconds average per video
-- **Smart caching** - Instant results for previously processed videos
 - 📥 **Downloadable format** - Professional DOCX study guides
 
 ---
@@ -40,7 +39,7 @@ SnapScholar **automates the full learning-to-notes pipeline** - from any educati
 
 Your study guide includes:
 - **5-8 organized sections** with AI-generated explanations
-- **High-quality screenshots** aligned with each topic
+- **Screenshots** aligned with each topic
 - **Timestamp references** linking back to the original video
 - **Downloadable DOCX** - ready to review, print, or share
 
@@ -65,7 +64,6 @@ Equilibrium occurs when quantity supplied equals quantity
 demanded...
 ```
 
----
 ---
 
 ## How to Use
