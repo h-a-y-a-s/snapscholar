@@ -183,10 +183,10 @@ SnapScholar uses **8 specialized AI agents** working in sequence - each handling
 - Updates state and passes forward
 
 **Why LangGraph?**
-- ✅ Clear, reproducible pipeline
-- ✅ Easy to debug and extend
-- ✅ Streaming progress updates (used by UI)
-- ✅ Separation between reasoning, tools, and validation
+- Clear, reproducible pipeline
+- Easy to debug and extend
+- Streaming progress updates (used by UI)
+- Separation between reasoning, tools, and validation
 
 ---
 
@@ -220,7 +220,7 @@ Topic-based visual selection (95% accuracy) vs traditional transcript-based appr
 
 ---
 
-## 👩‍💻 Team
+## Team
 
 **Haya Salameh** & **Amal Zubidat**
 
@@ -230,5 +230,4 @@ December 2025
 
 ---
 
-
-**Ready to transform your video learning?** → **[Try SnapScholar Now](https://snapscholar.streamlit.app/)**
+**[Try SnapScholar Now](https://snapscholar.streamlit.app/)**
