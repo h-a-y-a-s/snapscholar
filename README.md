@@ -66,20 +66,6 @@ demanded...
 ```
 
 ---
-
-## How It Works
-
-**Simple 6-step process:**
-
-1. **User pastes a YouTube link** into the web app
-2. **Transcript is extracted** with timestamps from YouTube
-3. **AI generates a structured summary** organized by topics (Gemini 2.0)
-4. **Key visual moments are selected** - one screenshot per topic
-5. **Screenshots are validated** using computer vision (brightness, contrast, content)
-6. **Study guide is assembled** - text + visuals combined into downloadable DOCX
-
-**Processing time:** 45-60 seconds | **Success rate:** 95%
-
 ---
 
 ## How to Use
@@ -138,6 +124,20 @@ streamlit run app.py
 6. **Open browser** to `http://localhost:8501`
 
 ---
+
+## How It Works
+
+**Simple 6-step process:**
+
+1. **User pastes a YouTube link** into the web app
+2. **Transcript is extracted** with timestamps from YouTube
+3. **AI generates a structured summary** organized by topics (Gemini 2.0)
+4. **Key visual moments are selected** - one screenshot per topic
+5. **Screenshots are validated** using computer vision (brightness, contrast, content)
+6. **Study guide is assembled** - text + visuals combined into downloadable DOCX
+
+**Processing time:** 45-60 seconds | **Success rate:** 95%
+
 
 ## Powered by LangGraph (Agentic AI Workflow)
 
