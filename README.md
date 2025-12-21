@@ -21,7 +21,7 @@ SnapScholar turns educational YouTube videos into **structured study guides** wi
 **Our Solution:**
 SnapScholar **automates the full learning-to-notes pipeline** - from any educational YouTube video to a comprehensive study guide in under 60 seconds.
 
-## Key Features
+## Key features
 
 - **AI-Powered Summaries** – Gemini 2.0 Flash generates structured, topic-based content organized into 5-8 logical sections
 - **Intelligent Screenshot Selection** – Automatically extracts the most relevant visual frames based on transcript analysis and topic alignment
@@ -33,7 +33,7 @@ SnapScholar **automates the full learning-to-notes pipeline** - from any educati
 ---
 ## How to Use
 
-### Online (No Installation Required)
+### Online (No installation required)
 
 1. Open: **https://snapscholar.streamlit.app/**
 2. Paste a YouTube link
@@ -42,7 +42,7 @@ SnapScholar **automates the full learning-to-notes pipeline** - from any educati
 
 That's it! No account needed.
 
-### Run Locally
+### Run locally
 
 **Requirements:**
 - Python **3.11+**
@@ -85,7 +85,7 @@ streamlit run app.py
 6. **Open browser** to `http://localhost:8501`
 
 ---
-## Best Results With
+## Best results with
 
 **Ideal videos:**
 - Educational lectures with slides or diagrams
@@ -99,7 +99,7 @@ streamlit run app.py
 - Music videos or entertainment content
 ---
 
-## How It Works
+## How it works
 
 **Simple 6-step process:**
 
@@ -113,7 +113,7 @@ streamlit run app.py
 **Processing time:** 45-60 seconds | **Success rate:** 95%
 
 
-## Powered by LangGraph (Agentic AI Workflow)
+## Agentic langGraph workflow
 
 SnapScholar uses **8 specialized AI agents** working in sequence - each handling one specific task:
 
@@ -162,7 +162,7 @@ SnapScholar uses **8 specialized AI agents** working in sequence - each handling
 - Streaming progress updates (used by UI)
 - Separation between reasoning, tools, and validation
 
-**Core Stack:**
+**Core stack:**
 - **LangGraph** - Agentic workflow orchestration
 - **Google Gemini 2.0 Flash** - AI summarization and reasoning
 - **Streamlit** - User-friendly web interface
