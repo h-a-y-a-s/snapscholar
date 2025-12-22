@@ -193,10 +193,10 @@ def main():
         """)
 
     st.subheader("✨ Example Video")
-    st.video("https://youtu.be/qJeaCHQ1k2w?si=Q7R6Yq9He9CEVrlW")
+    st.video("https://youtu.be/FgakZw6K1QQ?si=M4uKe5wLHTUlYbL2")
 
     # Input area
-    url = st.text_input("Enter YouTube Video URL", value="https://youtu.be/qJeaCHQ1k2w?si=Q7R6Yq9He9CEVrlW", placeholder="https://www.youtube.com/watch?v=...")
+    url = st.text_input("Enter YouTube Video URL", value="https://youtu.be/FgakZw6K1QQ?si=M4uKe5wLHTUlYbL2", placeholder="https://www.youtube.com/watch?v=...")
     with st.popover("⚙️ Settings"):
         # Model Selection
         available_models = (
