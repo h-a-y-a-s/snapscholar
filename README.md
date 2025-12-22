@@ -6,85 +6,34 @@ SnapScholar turns educational YouTube videos into **structured study guides** wi
 
 🔗 **Live App:** https://snapscholar.streamlit.app/
 
-> 📚 Applied Language Models – Group Project  
+> Applied Language Models – Group Project  
 > Google & Reichman Tech School (Dec 2025)  
 > **Team:** Haya Salameh & Amal Zubidat
 
 ---
 
-## 🎯 Why SnapScholar?
+## Why SnapScholar?
 
 **The Problem:**
 - Watching videos alone leads to **low retention** - you forget most of what you watch
-- Manual note-taking and screenshots are **time-consuming** (as long as the video itself!)
 - Visual explanations improve learning, but **finding the right moments is hard**
 
 **Our Solution:**
-SnapScholar **automates the full learning-to-notes pipeline** - from any educational YouTube video to a comprehensive study guide in under 60 seconds.
+SnapScholar **automates the full learning-to-notes pipeline** - from any educational YouTube video to a comprehensive study guide in under 1-2 mins.
+
+## Key features
+
+- **AI-Powered Summaries** – Gemini 2.0 Flash generates structured, topic-based content organized into 5-8 logical sections
+- **Intelligent Screenshot Selection** – Automatically extracts the most relevant visual frames based on transcript analysis and topic alignment
+- **Agentic AI Workflow** – Built with LangGraph orchestrating 8 specialized processing nodes for robust end-to-end automation
+- **Computer Vision Validation** – OpenCV ensures screenshot quality (brightness, blur detection, visual clarity)
+- **Fast & Reliable** – Average processing time of 1-2 mins per video
+- **Professional Output** – Download ready-to-use DOCX study guides with timestamps linking back to original video moments
 
 ---
+## How to Use
 
-## ✨ Main Features
-
-- 📄 **AI-generated structured summaries** - Gemini creates organized, topic-based content
-- 🖼️ **Smart screenshot selection** - Automatically finds the most relevant visual moments
-- 🤖 **Agentic workflow** - 8 specialized AI agents working in sequence (LangGraph)
-- 👁️ **Computer vision validation** - Ensures screenshots are clear and informative
-- ⚡ **Fast processing** - 45-60 seconds average per video
-- 💾 **Smart caching** - Instant results for previously processed videos
-- 📥 **Downloadable format** - Professional DOCX study guides
-
----
-
-## 📖 What You Get
-
-Your study guide includes:
-- ✅ **5-8 organized sections** with AI-generated explanations
-- ✅ **High-quality screenshots** aligned with each topic
-- ✅ **Timestamp references** linking back to the original video
-- ✅ **Downloadable DOCX** - ready to review, print, or share
-
-**Example Output:**
-```
-Study Guide: "Supply and Demand Economics"
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-## Introduction to Economic Principles
-[Screenshot: Market basics diagram - t=45s]
-
-Supply and demand are fundamental concepts that determine 
-market prices...
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-## Market Equilibrium
-[Screenshot: Supply/demand curves - t=312s]
-
-Equilibrium occurs when quantity supplied equals quantity 
-demanded...
-```
-
----
-
-## 🧭 How It Works
-
-**Simple 6-step process:**
-
-1. 📺 **User pastes a YouTube link** into the web app
-2. 📝 **Transcript is extracted** with timestamps from YouTube
-3. 🧠 **AI generates a structured summary** organized by topics (Gemini 2.0)
-4. 🎯 **Key visual moments are selected** - one screenshot per topic
-5. 👁️ **Screenshots are validated** using computer vision (brightness, contrast, content)
-6. 📄 **Study guide is assembled** - text + visuals combined into downloadable DOCX
-
-**Processing time:** 45-60 seconds | **Success rate:** 95%
-
----
-
-## 🚀 How to Use
-
-### Online (No Installation Required)
+### Online (No installation required)
 
 1. Open: **https://snapscholar.streamlit.app/**
 2. Paste a YouTube link
@@ -93,14 +42,12 @@ demanded...
 
 That's it! No account needed.
 
----
-
-### Run Locally
+### Run locally
 
 **Requirements:**
 - Python **3.11+**
 - Google API key ([get free key](https://makersuite.google.com/app/apikey))
-- `ffmpeg` installed (recommended)
+- `ffmpeg` 
 
 **Setup:**
 
@@ -138,8 +85,35 @@ streamlit run app.py
 6. **Open browser** to `http://localhost:8501`
 
 ---
+## Best results with
 
-## 🤖 Powered by LangGraph (Agentic AI Workflow)
+**Ideal videos:**
+- Educational lectures with slides or diagrams
+- Tutorials with step-by-step visuals
+- 10-30 minute length (optimal)
+- Videos with captions/subtitles
+
+**Avoid:**
+- Videos without captions
+- Purely conversational content (podcasts)
+- Music videos or entertainment content
+---
+
+## How it works
+
+**Simple 6-step process:**
+
+1. **User pastes a YouTube link** into the web app
+2. **Transcript is extracted** with timestamps from YouTube
+3. **AI generates a structured summary** organized by topics (Gemini 2.0)
+4. **Key visual moments are selected** - one screenshot per topic
+5. **Screenshots are validated** using computer vision (brightness, contrast, content)
+6. **Study guide is assembled** - text + visuals combined into downloadable DOCX
+
+**Processing time:** 1-2 mins 
+
+
+## Agentic langGraph workflow
 
 SnapScholar uses **8 specialized AI agents** working in sequence - each handling one specific task:
 
@@ -177,22 +151,7 @@ SnapScholar uses **8 specialized AI agents** working in sequence - each handling
         └─────────────────────┘
 ```
 
-**Each agent:**
-- Reads the current state
-- Performs **one responsibility**
-- Updates state and passes forward
-
-**Why LangGraph?**
-- ✅ Clear, reproducible pipeline
-- ✅ Easy to debug and extend
-- ✅ Streaming progress updates (used by UI)
-- ✅ Separation between reasoning, tools, and validation
-
----
-
-## 🧠 Technologies
-
-**Core Stack:**
+**Core stack:**
 - **LangGraph** - Agentic workflow orchestration
 - **Google Gemini 2.0 Flash** - AI summarization and reasoning
 - **Streamlit** - User-friendly web interface
@@ -200,45 +159,10 @@ SnapScholar uses **8 specialized AI agents** working in sequence - each handling
 - **YouTube Transcript API** - Caption extraction
 - **yt-dlp** - Video processing
 
-**Key Innovation:**
-Topic-based visual selection (95% accuracy) vs traditional transcript-based approach (60% accuracy)
-
 ---
-
-## 💡 Best Results With
-
-**Ideal videos:**
-- ✅ Educational lectures with slides or diagrams
-- ✅ Tutorials with step-by-step visuals
-- ✅ 10-30 minute length (optimal)
-- ✅ Videos with captions/subtitles
-
-**Avoid:**
-- ❌ Videos without captions
-- ❌ Purely conversational content (podcasts)
-- ❌ Music videos or entertainment content
-
----
-
-## 🔮 Future Enhancements
-
-- 🌍 Multi-language support (Spanish, French, Arabic)
-- ❓ Auto-generated quiz questions
-- 🎴 Flashcard export (Anki/Quizlet)
-- 📚 Batch playlist processing
-- 📱 Mobile app version
-
----
-
-## 👩‍💻 Team
 
 **Haya Salameh** & **Amal Zubidat**
 
 Applied Language Models Course  
 Google & Reichman Tech School  
 December 2025
-
----
-
-
-**Ready to transform your video learning?** → **[Try SnapScholar Now](https://snapscholar.streamlit.app/)**
