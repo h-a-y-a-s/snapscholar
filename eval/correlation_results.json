@@ -1,14 +1,14 @@
 {
   "overall": {
-    "pearson_r": 0.388888888888889,
-    "pearson_p": 0.5176315374029744,
-    "spearman_r": 0.4442616583193193,
-    "mae": 0.7
+    "pearson_r": 0.25160980414135636,
+    "pearson_p": 0.4831441828076329,
+    "spearman_r": 0.18272042068896444,
+    "mae": 0.45
   },
   "summary": {
     "pearson_r": NaN
   },
   "screenshots": {
-    "pearson_r": 0.48038446141526125
+    "pearson_r": 0.15309310892394862
   }
 }

@@ -10,7 +10,7 @@ from config.settings import settings
 # Test video
 #TEST_VIDEO = "https://www.youtube.com/watch?v=8wAwLwJAGHs"
 #TEST_VIDEO = "https://youtu.be/tadUeiNe5-g?si=trB5GJ1sZxqrXntA"
-TEST_VIDEO = "https://youtu.be/qJeaCHQ1k2w?si=pMfWaI271_wVYyC-"
+TEST_VIDEO = "https://youtu.be/x83WmvbRa2I?si=4ZnNDRD5yjo9ZvOo"
 def print_separator(title=""):
     """Print a nice separator"""
     print("\n" + "=" * 70)

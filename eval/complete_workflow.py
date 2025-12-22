@@ -437,28 +437,171 @@ def step5_create_visualization(results, correlations):
     human_overall = [r['human']['overall'] for r in results]
     llm_overall = [r['llm']['overall'] for r in results]
     
-    # Create simple scatter plot
-    plt.figure(figsize=(10, 8))
+    human_summary = [r['human']['summary'] for r in results]
+    llm_summary = [r['llm']['summary'] for r in results]
     
-    plt.scatter(human_overall, llm_overall, s=100, alpha=0.6, edgecolors='black')
+    human_screenshots = [r['human']['screenshots'] for r in results]
+    llm_screenshots = [r['llm']['screenshots'] for r in results]
+    
+    # Create figure with 2x2 subplots
+    fig, axes = plt.subplots(2, 2, figsize=(13, 11))
+    fig.suptitle('SnapScholar Evaluation: Human vs LLM Scores', 
+                 fontsize=18, fontweight='bold', y=0.995)
+    
+    # =====================================================
+    # Plot 1: Histogram for Summary Scores (SIDE BY SIDE)
+    # =====================================================
+    ax1 = axes[0, 0]
+    
+    # Set up the bar positions
+    scores = [1, 2, 3, 4, 5]
+    x = np.arange(len(scores))
+    width = 0.35  # Width of bars
+    
+    # Count frequencies for each score
+    human_counts = [human_summary.count(s) for s in scores]
+    llm_counts = [llm_summary.count(s) for s in scores]
+    
+    # Create side-by-side bars
+    bars1 = ax1.bar(x - width/2, human_counts, width, 
+                    label='Human', color='#2E86DE', edgecolor='black', linewidth=1.5)
+    bars2 = ax1.bar(x + width/2, llm_counts, width,
+                    label='LLM', color='#EE5A6F', edgecolor='black', linewidth=1.5)
+    
+    ax1.set_xlabel('Score', fontsize=13, fontweight='bold')
+    ax1.set_ylabel('Frequency', fontsize=13, fontweight='bold')
+    ax1.set_title('Summary Accuracy Scores Distribution', fontsize=14, fontweight='bold', pad=15)
+    ax1.set_xticks(x)
+    ax1.set_xticklabels(scores)
+    ax1.legend(fontsize=12, frameon=True, shadow=True, fancybox=True)
+    ax1.grid(True, alpha=0.2, axis='y', linestyle='--')
+    ax1.set_ylim(0, max(max(human_counts), max(llm_counts)) + 1)
+    
+    # Add value labels on bars
+    for bar in bars1:
+        height = bar.get_height()
+        if height > 0:
+            ax1.text(bar.get_x() + bar.get_width()/2., height,
+                    f'{int(height)}', ha='center', va='bottom', fontsize=10, fontweight='bold')
+    for bar in bars2:
+        height = bar.get_height()
+        if height > 0:
+            ax1.text(bar.get_x() + bar.get_width()/2., height,
+                    f'{int(height)}', ha='center', va='bottom', fontsize=10, fontweight='bold')
+    
+    # =====================================================
+    # Plot 2: Histogram for Screenshot Scores (SIDE BY SIDE)
+    # =====================================================
+    ax2 = axes[0, 1]
+    
+    # Count frequencies for each score
+    human_counts = [human_screenshots.count(s) for s in scores]
+    llm_counts = [llm_screenshots.count(s) for s in scores]
+    
+    # Create side-by-side bars
+    bars1 = ax2.bar(x - width/2, human_counts, width,
+                    label='Human', color='#2E86DE', edgecolor='black', linewidth=1.5)
+    bars2 = ax2.bar(x + width/2, llm_counts, width,
+                    label='LLM', color='#EE5A6F', edgecolor='black', linewidth=1.5)
+    
+    ax2.set_xlabel('Score', fontsize=13, fontweight='bold')
+    ax2.set_ylabel('Frequency', fontsize=13, fontweight='bold')
+    ax2.set_title('Screenshots Quality Scores Distribution', fontsize=14, fontweight='bold', pad=15)
+    ax2.set_xticks(x)
+    ax2.set_xticklabels(scores)
+    ax2.legend(fontsize=12, frameon=True, shadow=True, fancybox=True)
+    ax2.grid(True, alpha=0.2, axis='y', linestyle='--')
+    ax2.set_ylim(0, max(max(human_counts), max(llm_counts)) + 1)
+    
+    # Add value labels on bars
+    for bar in bars1:
+        height = bar.get_height()
+        if height > 0:
+            ax2.text(bar.get_x() + bar.get_width()/2., height,
+                    f'{int(height)}', ha='center', va='bottom', fontsize=10, fontweight='bold')
+    for bar in bars2:
+        height = bar.get_height()
+        if height > 0:
+            ax2.text(bar.get_x() + bar.get_width()/2., height,
+                    f'{int(height)}', ha='center', va='bottom', fontsize=10, fontweight='bold')
+    
+    # =====================================================
+    # Plot 3: Screenshots Correlation Scatter Plot
+    # =====================================================
+    ax3 = axes[1, 0]
+    
+    # Scatter plot with larger, more visible points
+    ax3.scatter(human_screenshots, llm_screenshots, s=150, alpha=0.7, 
+                edgecolors='black', color='#F39C12', linewidth=2, zorder=3)
     
     # Add regression line
-    z = np.polyfit(human_overall, llm_overall, 1)
+    z = np.polyfit(human_screenshots, llm_screenshots, 1)
     p = np.poly1d(z)
     x_line = np.linspace(1, 5, 100)
-    plt.plot(x_line, p(x_line), "r--", linewidth=2, label='Best fit')
+    ax3.plot(x_line, p(x_line), "r-", linewidth=3, label='Best fit', zorder=2)
     
     # Add perfect correlation line
-    plt.plot([1, 5], [1, 5], 'k--', alpha=0.3, linewidth=1, label='Perfect correlation')
+    ax3.plot([1, 5], [1, 5], 'k--', alpha=0.4, linewidth=2, 
+             label='Perfect correlation', zorder=1)
     
-    plt.xlabel('Human Scores', fontsize=14)
-    plt.ylabel('LLM Scores', fontsize=14)
-    plt.title(f'SnapScholar Evaluation: Human vs LLM\nr = {correlations["overall"]["pearson_r"]:.3f}, p = {correlations["overall"]["pearson_p"]:.4f}',
-              fontsize=16, fontweight='bold')
-    plt.legend(fontsize=12)
-    plt.grid(True, alpha=0.3)
-    plt.xlim(0.5, 5.5)
-    plt.ylim(0.5, 5.5)
+    ax3.set_xlabel('Human Scores (Screenshots)', fontsize=13, fontweight='bold')
+    ax3.set_ylabel('LLM Scores (Screenshots)', fontsize=13, fontweight='bold')
+    ax3.set_title(f'Screenshots Quality Correlation\nr = {correlations["screenshots"]["pearson_r"]:.3f}',
+                  fontsize=14, fontweight='bold', pad=15)
+    ax3.legend(fontsize=11, frameon=True, shadow=True, fancybox=True, loc='upper left')
+    ax3.grid(True, alpha=0.2, linestyle='--')
+    ax3.set_xlim(0.5, 5.5)
+    ax3.set_ylim(0.5, 5.5)
+    ax3.set_xticks([1, 2, 3, 4, 5])
+    ax3.set_yticks([1, 2, 3, 4, 5])
+    
+    # =====================================================
+    # Plot 4: Correlation Statistics Summary
+    # =====================================================
+    ax4 = axes[1, 1]
+    ax4.axis('off')  # Turn off axis for text display
+    
+    # Create summary text
+    summary_text = f"""
+CORRELATION STATISTICS
+{'='*40}
+
+Overall Scores:
+  Pearson r:     {correlations['overall']['pearson_r']:.3f}
+  p-value:       {correlations['overall']['pearson_p']:.4f}
+  Spearman ρ:    {correlations['overall']['spearman_r']:.3f}
+  MAE:           {correlations['overall']['mae']:.3f}
+
+Summary Accuracy:
+  Pearson r:     {correlations['summary']['pearson_r']:.3f}
+
+Screenshots Quality:
+  Pearson r:     {correlations['screenshots']['pearson_r']:.3f}
+
+{'='*40}
+Sample Size: n = {len(results)}
+
+Interpretation:
+"""
+    
+    # Add interpretation
+    r = correlations['overall']['pearson_r']
+    if r > 0.7:
+        summary_text += "  ✓ STRONG correlation\n"
+    elif r > 0.5:
+        summary_text += "  ✓ MODERATE correlation\n"
+    else:
+        summary_text += "  ⚠ WEAK correlation\n"
+    
+    if correlations['overall']['pearson_p'] < 0.05:
+        summary_text += "  ✓ Statistically significant"
+    else:
+        summary_text += "  ⚠ Not statistically significant"
+    
+    ax4.text(0.1, 0.95, summary_text, transform=ax4.transAxes,
+             fontsize=11, verticalalignment='top', fontfamily='monospace',
+             bbox=dict(boxstyle='round', facecolor='#FFE5B4', alpha=0.5, 
+                      edgecolor='black', linewidth=2))
     
     plt.tight_layout()
     
@@ -469,6 +612,11 @@ def step5_create_visualization(results, correlations):
     plt.savefig(plot_file, dpi=300, bbox_inches='tight')
     print(f"✓ Saved visualization to {plot_file}")
     plt.close()
+    
+    print(f"  - Histogram: Summary scores distribution (side-by-side bars)")
+    print(f"  - Histogram: Screenshots scores distribution (side-by-side bars)")
+    print(f"  - Scatter plot: Screenshots correlation only")
+    print(f"  - Statistics summary panel")
 
 
 def main():

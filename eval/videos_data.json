@@ -8,9 +8,9 @@
     "overall_score": 5.0
   },
   {
-    "video_id": "video_1",
+    "video_id": "8wAwLwJAGHs",
     "title": "Transcription and Translation - Protein Synthesis From DNA - Biology",
-    "url": "https://docs.google.com/forms/d/e/1FAIpQLSeDbZxhMrJKaaKhqDFsQR1i1SaX_m2VTmQ3cE7n-jYaEXshEw/viewform?usp=preview",
+    "url": "https://youtu.be/8wAwLwJAGHs?si=YRrpgexZvH6VYalq",
     "summary_score": 5,
     "screenshot_score": 3,
     "overall_score": 4.0
@@ -34,7 +34,7 @@
   {
     "video_id": "zeJD6dqJ5lo",
     "title": "But what is the Central Limit Theorem?",
-    "url": "https://youtu.be/zeJD6dqJ5lo?si=yeYTRDdA7KC02rWK",
+    "url": "https://youtu.be/zeJD6dqJ5lo?si=QyIP2vyNjI4sELQQ",
     "summary_score": 5,
     "screenshot_score": 4,
     "overall_score": 4.5
@@ -46,5 +46,37 @@
     "summary_score": 4,
     "screenshot_score": 3,
     "overall_score": 3.5
+  },
+  {
+    "video_id": "qJeaCHQ1k2w",
+    "title": "IL  Skip navigation Search    Create  9+  Avatar image Variational Autoencoders | Generative AI Animated",
+    "url": "https://youtu.be/qJeaCHQ1k2w?si=18EZR-7Ch29Kfz7q",
+    "summary_score": 5,
+    "screenshot_score": 3,
+    "overall_score": 4.0
+  },
+  {
+    "video_id": "EUrWGTCGzlA",
+    "title": "Deep Q-Learning/Deep Q-Network (DQN) Explained | Python Pytorch Deep Reinforcement Learning",
+    "url": "https://youtu.be/EUrWGTCGzlA?si=cddQhc4O56b9Axyl",
+    "summary_score": 4,
+    "screenshot_score": 3,
+    "overall_score": 3.5
+  },
+  {
+    "video_id": "FKOQTdcKkN4",
+    "title": "Double DQN (DDQN) Explained & Implemented | DQN PyTorch Beginners Tutorial #10",
+    "url": "https://youtu.be/FKOQTdcKkN4?si=zMjwdyZ-2_uWXHbu",
+    "summary_score": 5,
+    "screenshot_score": 4,
+    "overall_score": 4.5
+  },
+  {
+    "video_id": "x83WmvbRa2I",
+    "title": "Deep Q-Networks Explained!",
+    "url": "https://youtu.be/x83WmvbRa2I?si=4ZnNDRD5yjo9ZvOo",
+    "summary_score": 5,
+    "screenshot_score": 3,
+    "overall_score": 4.0
   }
 ]

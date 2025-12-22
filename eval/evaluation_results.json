@@ -15,6 +15,21 @@
     }
   },
   {
+    "video_id": "8wAwLwJAGHs",
+    "title": "Transcription and Translation - Protein Synthesis From DNA - Biology",
+    "url": "https://youtu.be/8wAwLwJAGHs?si=YRrpgexZvH6VYalq",
+    "human": {
+      "summary": 5,
+      "screenshots": 3,
+      "overall": 4.0
+    },
+    "llm": {
+      "summary": 4,
+      "screenshots": 4,
+      "overall": 4.0
+    }
+  },
+  {
     "video_id": "xLWES956JJE",
     "title": "fMRI Analysis: Part 1 - Preprocessing",
     "url": "https://www.youtube.com/watch?v=xLWES956JJE",
@@ -47,7 +62,7 @@
   {
     "video_id": "zeJD6dqJ5lo",
     "title": "But what is the Central Limit Theorem?",
-    "url": "https://youtu.be/zeJD6dqJ5lo?si=yeYTRDdA7KC02rWK",
+    "url": "https://youtu.be/zeJD6dqJ5lo?si=QyIP2vyNjI4sELQQ",
     "human": {
       "summary": 5,
       "screenshots": 4,
@@ -67,6 +82,66 @@
       "summary": 4,
       "screenshots": 3,
       "overall": 3.5
+    },
+    "llm": {
+      "summary": 4,
+      "screenshots": 4,
+      "overall": 4.0
+    }
+  },
+  {
+    "video_id": "qJeaCHQ1k2w",
+    "title": "IL  Skip navigation Search    Create  9+  Avatar image Variational Autoencoders | Generative AI Animated",
+    "url": "https://youtu.be/qJeaCHQ1k2w?si=18EZR-7Ch29Kfz7q",
+    "human": {
+      "summary": 5,
+      "screenshots": 3,
+      "overall": 4.0
+    },
+    "llm": {
+      "summary": 4,
+      "screenshots": 4,
+      "overall": 4.0
+    }
+  },
+  {
+    "video_id": "EUrWGTCGzlA",
+    "title": "Deep Q-Learning/Deep Q-Network (DQN) Explained | Python Pytorch Deep Reinforcement Learning",
+    "url": "https://youtu.be/EUrWGTCGzlA?si=cddQhc4O56b9Axyl",
+    "human": {
+      "summary": 4,
+      "screenshots": 3,
+      "overall": 3.5
+    },
+    "llm": {
+      "summary": 4,
+      "screenshots": 3,
+      "overall": 3.5
+    }
+  },
+  {
+    "video_id": "FKOQTdcKkN4",
+    "title": "Double DQN (DDQN) Explained & Implemented | DQN PyTorch Beginners Tutorial #10",
+    "url": "https://youtu.be/FKOQTdcKkN4?si=zMjwdyZ-2_uWXHbu",
+    "human": {
+      "summary": 5,
+      "screenshots": 4,
+      "overall": 4.5
+    },
+    "llm": {
+      "summary": 4,
+      "screenshots": 3,
+      "overall": 3.5
+    }
+  },
+  {
+    "video_id": "x83WmvbRa2I",
+    "title": "Deep Q-Networks Explained!",
+    "url": "https://youtu.be/x83WmvbRa2I?si=4ZnNDRD5yjo9ZvOo",
+    "human": {
+      "summary": 5,
+      "screenshots": 3,
+      "overall": 4.0
     },
     "llm": {
       "summary": 4,
